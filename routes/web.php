@@ -15,6 +15,12 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/about', function() {
+    return Inertia::render('About', [
+        'greeting' => '私たちについて'
+    ]);
+});
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
