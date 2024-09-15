@@ -1,5 +1,4 @@
 import NavBar from '@/Components/NavBar';
-import { Link, Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 const Welcome = props => {

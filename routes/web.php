@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,13 +14,15 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('welcome');
 
-Route::get('/about', function() {
+Route::get('/about', function () {
     return Inertia::render('About', [
         'greeting' => '私たちについて'
     ]);
-});
+})->name('about');
+
+Route::get('/user', [UserController::class, 'index'])->name('user');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -31,4 +34,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

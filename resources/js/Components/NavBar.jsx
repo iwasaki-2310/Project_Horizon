@@ -6,10 +6,10 @@ const NavBar = props => {
       <nav>
         <ul>
           <li>
-            <Link href="/">Welcome</Link>
+            <Link href={route('welcome')}>Welcome</Link>
           </li>
           <li>
-            <Link href="/about">About</Link>
+            <Link href={route('about')}>About</Link>
           </li>
         </ul>
       </nav>
