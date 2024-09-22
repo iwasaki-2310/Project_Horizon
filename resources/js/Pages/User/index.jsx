@@ -1,7 +1,10 @@
+import NavBar from '@/Components/NavBar';
+
 const Index = props => {
   console.log(props);
   return (
     <>
+      <NavBar />
       <h1>ユーザ一覧</h1>
       <ul>
         {props.users.map(user => (

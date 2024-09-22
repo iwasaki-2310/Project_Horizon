@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,7 +22,8 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-Route::get('/user', [UserController::class, 'index'])->name('user');
+Route::get('/users', [UsersController::class, 'index'])->name('users');
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
