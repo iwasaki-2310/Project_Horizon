@@ -1,4 +1,4 @@
-import NavBar from '@/Components/NavBar';
+import Layouts from '@/Layouts/Layouts';
 import { useEffect } from 'react';
 
 const Welcome = props => {
@@ -8,8 +8,9 @@ const Welcome = props => {
   });
   return (
     <>
-      <NavBar />
-      <h1>{greeting}Welcome Inertia.js</h1>
+      <Layouts>
+        <h1>{greeting}Welcome Inertia.js</h1>
+      </Layouts>
     </>
   );
 };

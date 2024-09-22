@@ -1,10 +1,10 @@
 import NavBar from '@/Components/NavBar';
+import Layouts from '@/Layouts/Layouts';
 
 const Index = props => {
   console.log(props);
   return (
-    <>
-      <NavBar />
+    <Layouts>
       <h1>ユーザ一覧</h1>
       <ul>
         {props.users.map(user => (
@@ -15,7 +15,7 @@ const Index = props => {
           </>
         ))}
       </ul>
-    </>
+    </Layouts>
   );
 };
 
