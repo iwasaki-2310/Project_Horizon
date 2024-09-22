@@ -1,4 +1,3 @@
-import NavBar from '@/Components/NavBar';
 import Layouts from '@/Layouts/Layouts';
 
 const Index = props => {
