@@ -31,7 +31,7 @@ const NavBar = props => {
           <ListItem>
             <Link
               class={url === url.startsWith('/users') ? 'active' : ''}
-              href={route('users')}
+              href={route('users.index')}
             >
               Users
             </Link>

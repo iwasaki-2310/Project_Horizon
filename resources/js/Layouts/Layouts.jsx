@@ -24,7 +24,6 @@ const Layouts = ({ children }) => {
         <NavBar />
       </header>
       <main>{children}</main>
-      <p>aaaa</p>
     </>
   );
 };

@@ -22,7 +22,7 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-Route::get('/users', [UsersController::class, 'index'])->name('users');
+Route::resource('/users', UsersController::class);
 
 
 Route::get('/dashboard', function () {

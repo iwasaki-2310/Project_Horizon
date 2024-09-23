@@ -1,11 +1,23 @@
 import Layouts from '@/Layouts/Layouts';
-import { Heading, ListItem, UnorderedList } from '@chakra-ui/react';
+import { Heading, Link, ListItem, UnorderedList } from '@chakra-ui/react';
 
 const Index = props => {
   console.log(props);
   return (
     <>
       <Heading as="h2">ユーザ一覧</Heading>
+      <Link
+        href={route('users.create')}
+        display="inline-block"
+        bg="teal.500"
+        color="white"
+        px={4}
+        py={2}
+        borderRadius="md"
+        _hover={{ bg: 'teal.600' }}
+      >
+        ユーザ登録
+      </Link>
       <UnorderedList>
         {props.users.map(user => (
           <>
