@@ -1,10 +1,16 @@
 import NavBar from '@/Components/NavBar';
+import { Heading } from '@chakra-ui/react';
 
 const Layouts = ({ children }) => {
   return (
     <>
-      <NavBar />
-      {children}
+      <header>
+        <Heading as="h1" style={{ textAlign: 'center' }}>
+          Logo
+        </Heading>
+        <NavBar />
+      </header>
+      <main>{children}</main>
     </>
   );
 };

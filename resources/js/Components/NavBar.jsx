@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import '../../css/NavBar.css';
+import { ListItem, UnorderedList } from '@chakra-ui/react';
 
 const NavBar = props => {
   const { url, component } = usePage();
@@ -9,29 +10,33 @@ const NavBar = props => {
       <p>URL: {url}</p>
       <p>Component: {component}</p>
       <nav>
-        <ul>
-          <li>
+        <UnorderedList
+          display="flex"
+          justifyContent="space-between"
+          listStyleType="none"
+        >
+          <ListItem>
             <Link class={url === '/' ? 'active' : ''} href={route('welcome')}>
               Welcome
             </Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link
               class={url === '/about' ? 'active' : ''}
               href={route('about')}
             >
               About
             </Link>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem>
             <Link
               class={url === url.startsWith('/users') ? 'active' : ''}
               href={route('users')}
             >
               Users
             </Link>
-          </li>
-        </ul>
+          </ListItem>
+        </UnorderedList>
       </nav>
     </>
   );

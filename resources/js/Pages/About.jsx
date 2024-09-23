@@ -1,12 +1,13 @@
 import Layouts from '@/Layouts/Layouts';
+import { Heading, Text } from '@chakra-ui/react';
 
 const About = props => {
   const { greeting } = props;
   return (
     <>
       <Layouts>
-        <h1>About</h1>
-        <p>{greeting}</p>
+        <Heading as="h2">About</Heading>
+        <Text>{greeting}</Text>
       </Layouts>
     </>
   );
