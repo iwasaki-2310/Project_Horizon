@@ -1,7 +1,14 @@
 import NavBar from '@/Components/NavBar';
 import { Heading } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 const Layouts = ({ children }) => {
+  useEffect(() => {
+    console.log('Mount Layout');
+    return () => {
+      console.log('UnMount Layout');
+    };
+  }, []);
   return (
     <>
       <header>

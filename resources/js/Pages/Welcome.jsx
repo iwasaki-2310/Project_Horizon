@@ -9,12 +9,12 @@ const Welcome = props => {
   });
   return (
     <>
-      <Layouts>
-        <Heading as="h2">{greeting}Welcome Inertia.js</Heading>
-        <Button>サンプルボタン</Button>
-      </Layouts>
+      <Heading as="h2">{greeting}Welcome Inertia.js</Heading>
+      <Button>サンプルボタン</Button>
     </>
   );
 };
+
+Welcome.layout = page => <Layouts>{page}</Layouts>;
 
 export default Welcome;

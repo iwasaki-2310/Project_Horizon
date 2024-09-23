@@ -5,12 +5,12 @@ const About = props => {
   const { greeting } = props;
   return (
     <>
-      <Layouts>
-        <Heading as="h2">About</Heading>
-        <Text>{greeting}</Text>
-      </Layouts>
+      <Heading as="h2">About</Heading>
+      <Text>{greeting}</Text>
     </>
   );
 };
+
+About.layout = page => <Layouts>{page}</Layouts>;
 
 export default About;
