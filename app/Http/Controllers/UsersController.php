@@ -19,4 +19,10 @@ class UsersController extends Controller
     {
         return Inertia::render('User/Create');
     }
+
+    public function store()
+    {
+        User::create(request()->all());
+        return Inertia::location(route('users.index'));
+    }
 }

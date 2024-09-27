@@ -1,13 +1,21 @@
 import Layouts from '@/Layouts/Layouts';
 import { Box, Button, Heading } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
+import { Inertia } from '@inertiajs/inertia';
 import { useState } from 'react';
 
 const Create = () => {
   const [values, setValues] = useState({
-    name: '',
     email: '',
     password: '',
+    familly_name: '',
+    first_name: '',
+    family_name_kana: '',
+    first_name_kana: '',
+    display_name: '',
+    tel: '',
+    phrase: '',
+    encrypted_password: '',
   });
 
   const handleChange = e => {
@@ -21,7 +29,7 @@ const Create = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    Inertia.post('/user', values);
+    Inertia.post('/users', values);
   };
   return (
     <>
@@ -30,18 +38,62 @@ const Create = () => {
       <Box>
         <form onSubmit={handleSubmit}>
           <Box>
-            <label htmlFor="name">名前：</label>
-            <input id="name" value={values.name} onChange={handleChange} />
+            <label htmlFor="familly_name">性：</label>
+            <input
+              id="familly_name"
+              value={values.familly_name}
+              onChange={handleChange}
+            />
+          </Box>
+          <Box>
+            <label htmlFor="first_name">名：</label>
+            <input
+              id="first_name"
+              value={values.first_name}
+              onChange={handleChange}
+            />
+          </Box>
+          <Box>
+            <label htmlFor="family_name_kana">性（カナ）：</label>
+            <input
+              id="family_name_kana"
+              value={values.family_name_kana}
+              onChange={handleChange}
+            />
+          </Box>
+          <Box>
+            <label htmlFor="first_name_kana">名（カナ）：</label>
+            <input
+              id="first_name_kana"
+              value={values.first_name_kana}
+              onChange={handleChange}
+            />
+          </Box>
+          <Box>
+            <label htmlFor="display_name">表示名：</label>
+            <input
+              id="display_name"
+              value={values.display_name}
+              onChange={handleChange}
+            />
           </Box>
           <Box>
             <label htmlFor="email">メールアドレス：</label>
             <input id="email" value={values.email} onChange={handleChange} />
           </Box>
           <Box>
-            <label htmlFor="password">パスワード：</label>
+            <label htmlFor="tel">電話番号：</label>
+            <input id="tel" value={values.tel} onChange={handleChange} />
+          </Box>
+          <Box>
+            <label htmlFor="phrase">一言：</label>
+            <input id="phrase" value={values.phrase} onChange={handleChange} />
+          </Box>
+          <Box>
+            <label htmlFor="encrypted_password">パスワード：</label>
             <input
-              id="password"
-              value={values.password}
+              id="encrypted_password"
+              value={values.encrypted_password}
               onChange={handleChange}
             />
           </Box>
