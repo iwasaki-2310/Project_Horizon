@@ -1,10 +1,11 @@
 import Layouts from '@/Layouts/Layouts';
-import { Box, Button, Heading } from '@chakra-ui/react';
-import { Head } from '@inertiajs/react';
+import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Inertia } from '@inertiajs/inertia';
 import { useState } from 'react';
 
 const Create = () => {
+  const { errors } = usePage().props;
   const [values, setValues] = useState({
     email: '',
     password: '',
@@ -44,6 +45,9 @@ const Create = () => {
               value={values.familly_name}
               onChange={handleChange}
             />
+            {errors.familly_name && (
+              <Text color="red">{errors.familly_name}</Text>
+            )}
           </Box>
           <Box>
             <label htmlFor="first_name">名：</label>
@@ -52,6 +56,7 @@ const Create = () => {
               value={values.first_name}
               onChange={handleChange}
             />
+            {errors.first_name && <Text color="red">{errors.first_name}</Text>}
           </Box>
           <Box>
             <label htmlFor="family_name_kana">性（カナ）：</label>
@@ -60,6 +65,9 @@ const Create = () => {
               value={values.family_name_kana}
               onChange={handleChange}
             />
+            {errors.family_name_kana && (
+              <Text color="red">{errors.family_name_kana}</Text>
+            )}
           </Box>
           <Box>
             <label htmlFor="first_name_kana">名（カナ）：</label>
@@ -68,6 +76,9 @@ const Create = () => {
               value={values.first_name_kana}
               onChange={handleChange}
             />
+            {errors.family_name_kana && (
+              <Text color="red">{errors.family_name_kana}</Text>
+            )}
           </Box>
           <Box>
             <label htmlFor="display_name">表示名：</label>
@@ -76,18 +87,24 @@ const Create = () => {
               value={values.display_name}
               onChange={handleChange}
             />
+            {errors.display_name && (
+              <Text color="red">{errors.display_name}</Text>
+            )}
           </Box>
           <Box>
             <label htmlFor="email">メールアドレス：</label>
             <input id="email" value={values.email} onChange={handleChange} />
+            {errors.email && <Text color="red">{errors.email}</Text>}
           </Box>
           <Box>
             <label htmlFor="tel">電話番号：</label>
             <input id="tel" value={values.tel} onChange={handleChange} />
+            {errors.tel && <Text color="red">{errors.tel}</Text>}
           </Box>
           <Box>
             <label htmlFor="phrase">一言：</label>
             <input id="phrase" value={values.phrase} onChange={handleChange} />
+            {errors.phrase && <Text color="red">{errors.phrase}</Text>}
           </Box>
           <Box>
             <label htmlFor="encrypted_password">パスワード：</label>
@@ -96,6 +113,9 @@ const Create = () => {
               value={values.encrypted_password}
               onChange={handleChange}
             />
+            {errors.encrypted_password && (
+              <Text color="red">{errors.encrypted_password}</Text>
+            )}
           </Box>
           <Button type="submit">登録</Button>
         </form>
