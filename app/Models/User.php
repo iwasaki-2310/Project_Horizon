@@ -17,7 +17,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'email',
-        'familly_name',
+        'family_name',
         'first_name',
         'family_name_kana',
         'first_name_kana',
@@ -46,7 +46,7 @@ class User extends Authenticatable
     {
         return [
             'id' => 'integer',
-            'familly_name' => 'string',
+            'family_name' => 'string',
             'first_name' => 'string',
             'family_name_kana' => 'string',
             'first_name_kana' => 'string',

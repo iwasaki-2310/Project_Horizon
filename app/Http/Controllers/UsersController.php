@@ -24,8 +24,8 @@ class UsersController extends Controller
     {
         $validated = $request->validate(
             [
-                'email' => ['required', 'email'],
-                'familly_name' => ['required', 'max:50'],
+                'email' => ['required', 'email', 'unique:users,email'],
+                'family_name' => ['required', 'max:50'],
                 'first_name' => ['required', 'max:50'],
                 'family_name_kana' => ['required', 'max:50'],
                 'first_name_kana' => ['required', 'max:50'],
@@ -37,8 +37,9 @@ class UsersController extends Controller
             [
                 'email.required' => 'メールアドレスを入力してください',
                 'email.email' => 'メールアドレスはメールアドレスの形式で入力してください',
-                'familly_name.required' => '性を入力してください',
-                'familly_name.max' => '性は50文字以内で入力してください',
+                'email.unique' => 'このメールアドレスは既に登録されています',
+                'family_name.required' => '性を入力してください',
+                'family_name.max' => '性は50文字以内で入力してください',
                 'first_name.required' => '名を入力してください',
                 'first_name.max' => '名は50文字以内で入力してください',
                 'family_name_kana.required' => '性（カナ）を入力してください',
@@ -55,6 +56,7 @@ class UsersController extends Controller
                 'encrypted_password.max' => 'パスワードは50文字以内で入力してください',
             ]
         );
+        $validated['encrypted_password'] = bcrypt($validated['encrypted_password']);
         User::create($validated);
         // return Inertia::location(route('users.index'));
         return redirect()->route('users.index');
