@@ -22,6 +22,7 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
+        // バリデーション
         $validated = $request->validate(
             [
                 'email' => ['required', 'email', 'unique:users,email'],
@@ -56,7 +57,22 @@ class UsersController extends Controller
                 'encrypted_password.max' => 'パスワードは50文字以内で入力してください',
             ]
         );
+
+        // パスワードをハッシュ化
         $validated['encrypted_password'] = bcrypt($validated['encrypted_password']);
+
+        // ファイル保存
+        if ($request->avatar_file_path) {
+            // ファイル名取得
+            $file_name = $request->file('avatar_file_path')->getClientOriginalName();
+            // /storage/publicに取得したファイル名でファイルを保存
+            $request->file('avatar_file_path')->storeAs('public', $file_name);
+            // ファイルをテーブルに保存する配列に追加
+            $validated['avatar_file_path'] = '/storage/' . $file_name;
+        };
+        // dd($validated);
+
+        // テーブルに保存
         User::create($validated);
         // return Inertia::location(route('users.index'));
         return redirect()->route('users.index');

@@ -16,10 +16,15 @@ const Create = () => {
     tel: '',
     phrase: '',
     encrypted_password: '',
+    avatar_file_path: '',
   });
 
   const handleChange = e => {
     setData(e.target.id, e.target.value);
+  };
+
+  const handleFileChange = e => {
+    setData('avatar_file_path', e.target.files[0]);
   };
 
   const handleSubmit = e => {
@@ -31,7 +36,7 @@ const Create = () => {
       <Head title="ユーザー登録"></Head>
       <Heading as="h2">ユーザーの登録</Heading>
       <Box>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <Box>
             <label htmlFor="family_name">性：</label>
             <input
@@ -109,6 +114,17 @@ const Create = () => {
             />
             {errors.encrypted_password && (
               <Text color="red">{errors.encrypted_password}</Text>
+            )}
+          </Box>
+          <Box>
+            <label htmlFor="avatar_file_path">アバター：</label>
+            <input
+              type="file"
+              id="avatar_file_path"
+              onChange={handleFileChange}
+            />
+            {errors.encrypted_password && (
+              <Text color="red">{errors.avatar_file_path}</Text>
             )}
           </Box>
           <Button type="submit">登録</Button>

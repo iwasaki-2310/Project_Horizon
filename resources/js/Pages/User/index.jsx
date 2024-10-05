@@ -24,6 +24,12 @@ const Index = props => {
             <ListItem key={user.id}>{user.display_name}</ListItem>
             <ListItem key={user.id}>{user.email}</ListItem>
             <ListItem key={user.id}>{user.created_at}</ListItem>
+            {user.avatar_file_path && (
+              <ListItem key={user.id}>
+                <img src={user.avatar_file_path} alt="アバター" />
+              </ListItem>
+            )}
+            ;
           </>
         ))}
       </UnorderedList>

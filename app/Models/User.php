@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phrase',
         'encrypted_password',
         'is_deleted',
+        'avatar_file_path',
     ];
 
     /**
@@ -58,6 +59,7 @@ class User extends Authenticatable
             'is_deleted' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'avatar_file_path'
         ];
     }
 }
