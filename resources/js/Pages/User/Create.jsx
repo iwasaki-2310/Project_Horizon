@@ -123,7 +123,7 @@ const Create = () => {
               id="avatar_file_path"
               onChange={handleFileChange}
             />
-            {errors.encrypted_password && (
+            {errors.avatar_file_path && (
               <Text color="red">{errors.avatar_file_path}</Text>
             )}
           </Box>

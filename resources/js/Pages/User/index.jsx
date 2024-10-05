@@ -1,5 +1,11 @@
 import Layouts from '@/Layouts/Layouts';
-import { Heading, Link, ListItem, UnorderedList } from '@chakra-ui/react';
+import {
+  Heading,
+  Image,
+  Link,
+  ListItem,
+  UnorderedList,
+} from '@chakra-ui/react';
 
 const Index = props => {
   console.log(props);
@@ -21,15 +27,20 @@ const Index = props => {
       <UnorderedList>
         {props.users.map(user => (
           <>
+            {user.avatar_file_path && (
+              <ListItem key={user.id}>
+                <Image
+                  w="50px"
+                  h="50px"
+                  rounded="full"
+                  src={user.avatar_file_path}
+                  alt="アバター"
+                />
+              </ListItem>
+            )}
             <ListItem key={user.id}>{user.display_name}</ListItem>
             <ListItem key={user.id}>{user.email}</ListItem>
             <ListItem key={user.id}>{user.created_at}</ListItem>
-            {user.avatar_file_path && (
-              <ListItem key={user.id}>
-                <img src={user.avatar_file_path} alt="アバター" />
-              </ListItem>
-            )}
-            ;
           </>
         ))}
       </UnorderedList>

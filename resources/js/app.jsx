@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ChakraProvider } from '@chakra-ui/react';
+import customTheme from './theme';
 import React from 'react';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -46,7 +47,7 @@ createInertiaApp({
 
     root.render(
       <ErrorBoundary>
-        <ChakraProvider>
+        <ChakraProvider theme={customTheme}>
           <App {...props} />
         </ChakraProvider>
       </ErrorBoundary>

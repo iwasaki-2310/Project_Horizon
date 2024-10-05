@@ -34,6 +34,7 @@ class UsersController extends Controller
                 'tel' => ['required', 'max:20'],
                 'phrase' => ['required', 'max:100'],
                 'encrypted_password' => ['required', 'max:50'],
+                'avatar_file_path' => ['required'],
             ],
             [
                 'email.required' => 'メールアドレスを入力してください',
@@ -55,6 +56,7 @@ class UsersController extends Controller
                 'phrase.max' => '一言は100文字以内で入力してください',
                 'encrypted_password.required' => 'パスワードを入力してください',
                 'encrypted_password.max' => 'パスワードは50文字以内で入力してください',
+                'avatar_file_path.required' => 'アバターを入力してください',
             ]
         );
 
