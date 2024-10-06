@@ -62,4 +62,14 @@ class User extends Authenticatable
             'avatar_file_path'
         ];
     }
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        // ここをpasswordからencrypted_passwordに変更する
+        return $this->encrypted_password;
+    }
 }

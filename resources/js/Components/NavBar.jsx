@@ -7,8 +7,6 @@ const NavBar = props => {
   console.log(url);
   return (
     <>
-      <p>URL: {url}</p>
-      <p>Component: {component}</p>
       <nav>
         <UnorderedList
           display="flex"

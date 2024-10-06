@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,8 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('welcome');
+
+Route::resource('/login', AuthenticatedSessionController::class);
 
 Route::get('/about', function () {
     return Inertia::render('About', [
