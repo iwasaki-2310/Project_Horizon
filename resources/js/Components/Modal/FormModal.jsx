@@ -15,6 +15,8 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { PrimaryButton } from '../PrimaryButton';
+import { CancelButton } from '../CancelButton';
 
 const FormModal = props => {
     const { isOpen, onClose, modalTitle, fields, submitUrl } = props;
@@ -63,8 +65,12 @@ const FormModal = props => {
                         </Stack>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={handleSubmit}>登録</Button>
-                        <Button onClick={onclose}>キャンセル</Button>
+                        <PrimaryButton onClick={handleSubmit}>
+                            登録
+                        </PrimaryButton>
+                        <CancelButton marginLeft={4} onClick={onclose}>
+                            キャンセル
+                        </CancelButton>
                     </ModalFooter>
                 </ModalContent>
             </ModalOverlay>

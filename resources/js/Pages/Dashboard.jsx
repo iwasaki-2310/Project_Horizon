@@ -7,6 +7,7 @@ import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import UserModal from '@/Components/Modal/FormModal';
 import FormModal from '@/Components/Modal/FormModal';
+import { PrimaryButton } from '@/Components/PrimaryButton';
 
 export default function Dashboard({ auth }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function Dashboard({ auth }) {
     const DashContent = ({ children }) => {
         return (
             <Box
-                bg="teal.50"
+                bg="gray.50"
                 pt="5"
                 pb="8"
                 px="4"
@@ -86,7 +87,9 @@ export default function Dashboard({ auth }) {
                 <DashContainer>
                     <DashContent>
                         <ContentTitle>オフィス</ContentTitle>
-                        <Button onClick={showModal}>オフィスを新規作成</Button>
+                        <PrimaryButton onClick={showModal}>
+                            オフィスを新規作成
+                        </PrimaryButton>
                         <FormModal
                             isOpen={isModalOpen}
                             onClose={closeModal}
