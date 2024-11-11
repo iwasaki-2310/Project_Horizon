@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -26,6 +27,10 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::resource('/users', UsersController::class);
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
+});
 
 
 Route::get('/dashboard', function () {
