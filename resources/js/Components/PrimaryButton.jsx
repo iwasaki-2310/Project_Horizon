@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react';
 
-export const PrimaryButton = ({ children, onClick }) => {
+export const PrimaryButton = ({ children, onClick, type = 'button' }) => {
     return (
         <Button
             bg="blue.500"
@@ -8,6 +8,7 @@ export const PrimaryButton = ({ children, onClick }) => {
             _hover={{
                 bg: 'blue.200',
             }}
+            type={type}
             onClick={onClick}
         >
             {children}

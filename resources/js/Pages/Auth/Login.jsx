@@ -2,105 +2,113 @@ import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { PrimaryButton } from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
-  const { data, setData, post, processing, errors, reset } = useForm({
-    email: '',
-    password: '',
-    remember: false,
-  });
-
-  const submit = e => {
-    e.preventDefault();
-
-    post(route('login'), {
-      onFinish: () => reset('password'),
+    const { data, setData, post, processing, errors, reset } = useForm({
+        email: '',
+        password: '',
+        remember: false,
     });
-  };
 
-  return (
-    <GuestLayout>
-      <Head title="Log in" />
+    const submit = e => {
+        e.preventDefault();
 
-      {status && (
-        <div className="mb-4 font-medium text-sm text-green-600">{status}</div>
-      )}
+        post(route('login'), {
+            onFinish: () => reset('password'),
+        });
+    };
 
-      <form onSubmit={submit}>
-        <div>
-          <InputLabel
-            htmlFor="email"
-            value="メールアドレス"
-            className="text-indigo-500"
-            style={{ fontWeight: 'bold' }}
-          />
+    return (
+        <GuestLayout>
+            <Head title="Log in" />
 
-          <TextInput
-            id="email"
-            type="email"
-            name="email"
-            value={data.email}
-            className="mt-1 block w-full"
-            autoComplete="username"
-            isFocused={true}
-            onChange={e => setData('email', e.target.value)}
-          />
+            {status && (
+                <div className="mb-4 font-medium text-sm text-green-600">
+                    {status}
+                </div>
+            )}
 
-          <InputError message={errors.email} className="mt-2" />
-        </div>
+            <form onSubmit={submit}>
+                <div>
+                    <InputLabel
+                        htmlFor="email"
+                        value="メールアドレス"
+                        className="text-indigo-500"
+                        style={{ fontWeight: 'bold' }}
+                    />
 
-        <div className="mt-9">
-          <InputLabel
-            htmlFor="password"
-            value="パスワード"
-            className="text-indigo-500"
-            style={{ fontWeight: 'bold' }}
-          />
+                    <TextInput
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={data.email}
+                        className="mt-1 block w-full"
+                        autoComplete="username"
+                        isFocused={true}
+                        onChange={e => setData('email', e.target.value)}
+                    />
 
-          <TextInput
-            id="password"
-            type="password"
-            name="password"
-            value={data.password}
-            className="mt-1 block w-full"
-            autoComplete="current-password"
-            onChange={e => setData('password', e.target.value)}
-          />
+                    <InputError message={errors.email} className="mt-2" />
+                </div>
 
-          <InputError message={errors.password} className="mt-2" />
-        </div>
+                <div className="mt-9">
+                    <InputLabel
+                        htmlFor="password"
+                        value="パスワード"
+                        className="text-indigo-500"
+                        style={{ fontWeight: 'bold' }}
+                    />
 
-        <div className="block mt-9">
-          <label className="flex items-center">
-            <Checkbox
-              name="remember"
-              checked={data.remember}
-              onChange={e => setData('remember', e.target.checked)}
-            />
-            <span className="ms-2 text-sm text-gray-600">
-              ログイン情報を保存する
-            </span>
-          </label>
-        </div>
+                    <TextInput
+                        id="password"
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        className="mt-1 block w-full"
+                        autoComplete="current-password"
+                        onChange={e => setData('password', e.target.value)}
+                    />
 
-        <div className="flex items-center justify-end mt-9">
-          {canResetPassword && (
-            <Link
-              href={route('password.request')}
-              className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              パスワードをお忘れの方はこちら
-            </Link>
-          )}
+                    <InputError message={errors.password} className="mt-2" />
+                </div>
 
-          <PrimaryButton className="ms-4" disabled={processing}>
-            ログイン
-          </PrimaryButton>
-        </div>
-      </form>
-    </GuestLayout>
-  );
+                <div className="block mt-9">
+                    <label className="flex items-center">
+                        <Checkbox
+                            name="remember"
+                            checked={data.remember}
+                            onChange={e =>
+                                setData('remember', e.target.checked)
+                            }
+                        />
+                        <span className="ms-2 text-sm text-gray-600">
+                            ログイン情報を保存する
+                        </span>
+                    </label>
+                </div>
+
+                <div className="flex items-center justify-end mt-9">
+                    {canResetPassword && (
+                        <Link
+                            href={route('password.request')}
+                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4"
+                        >
+                            パスワードをお忘れの方はこちら
+                        </Link>
+                    )}
+
+                    <PrimaryButton
+                        className="ms-4"
+                        type="submit"
+                        disabled={processing}
+                    >
+                        ログイン
+                    </PrimaryButton>
+                </div>
+            </form>
+        </GuestLayout>
+    );
 }
