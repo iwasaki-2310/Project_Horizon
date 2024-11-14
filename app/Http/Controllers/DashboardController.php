@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -18,7 +19,9 @@ class DashboardController extends Controller
     public function createOffice(Request $request)
     {
         try {
+            DB::beginTransaction();
         } catch (Exception $e) {
+            DB::rollBack();
             Log($e);
             dd($e);
         }
