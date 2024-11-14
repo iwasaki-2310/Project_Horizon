@@ -95,7 +95,7 @@ export default function Dashboard({ auth }) {
                             onClose={closeModal}
                             modalTitle={'オフィスの新規作成'}
                             fields={fields}
-                            submitUrl={'/save-data'}
+                            submitUrl={route('dashboard.createOffice')}
                         />
                     </DashContent>
                     <DashContent>

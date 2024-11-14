@@ -29,7 +29,7 @@ Route::get('/about', function () {
 Route::resource('/users', UsersController::class);
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
+    Route::post('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
 });
 
 
