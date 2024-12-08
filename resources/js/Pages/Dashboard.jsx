@@ -2,15 +2,27 @@ import Modal from '@/Components/Modal/FormModal';
 import ModalInput from '@/Components/Modal/ModalInput';
 import ModalInputLabel from '@/Components/Modal/ModalInputLabel';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Box, Button, Container, Grid, Heading, Text } from '@chakra-ui/react';
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    Heading,
+    ListItem,
+    Text,
+    UnorderedList,
+} from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import UserModal from '@/Components/Modal/FormModal';
 import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
+import axios from 'axios';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, initialOffices }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [offices, setOffices] = useState(initialOffices || []);
+
     //   全体を囲うラッパー
     const DashContainer = ({ children }) => {
         return (
@@ -55,7 +67,24 @@ export default function Dashboard({ auth }) {
         setIsModalOpen(false);
     };
 
+    const handleSubmit = data => {
+        axios
+            .post(route('dashboard.createOffice'), data)
+            .then(response => {
+                setOffices([...offices, response.data.office]);
+                closeModal();
+            })
+            .catch(error => {
+                console.error('オフィスの作成に失敗しました', error);
+            });
+    };
+
     const fields = [
+        {
+            label: 'オフィス番号',
+            name: 'office_number',
+            placeHolder: 'オフィス番号を入力してください',
+        },
         {
             label: 'オフィス名',
             name: 'office_name',
@@ -63,7 +92,7 @@ export default function Dashboard({ auth }) {
         },
         {
             label: 'オフィス概要',
-            name: 'office_desc',
+            name: 'office_description',
             placeHolder: 'オフィスの概要を入力してください',
         },
         {
@@ -72,6 +101,7 @@ export default function Dashboard({ auth }) {
             placeHolder: 'オフィスのパスワードを入力してください',
         },
     ];
+    console.log(offices);
 
     return (
         <>
@@ -87,6 +117,7 @@ export default function Dashboard({ auth }) {
                 <DashContainer>
                     <DashContent>
                         <ContentTitle>オフィス</ContentTitle>
+
                         <PrimaryButton onClick={showModal}>
                             オフィスを新規作成
                         </PrimaryButton>
@@ -95,8 +126,17 @@ export default function Dashboard({ auth }) {
                             onClose={closeModal}
                             modalTitle={'オフィスの新規作成'}
                             fields={fields}
-                            submitUrl={route('dashboard.createOffice')}
+                            onSubmit={handleSubmit}
                         />
+                        <UnorderedList>
+                            {offices.map((office, index) => {
+                                return (
+                                    <ListItem key={index}>
+                                        {office.office_name}
+                                    </ListItem>
+                                );
+                            })}
+                        </UnorderedList>
                     </DashContent>
                     <DashContent>
                         <ContentTitle>交換した名刺</ContentTitle>

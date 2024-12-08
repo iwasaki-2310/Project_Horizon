@@ -19,7 +19,7 @@ import { PrimaryButton } from '../PrimaryButton';
 import { CancelButton } from '../CancelButton';
 
 const FormModal = props => {
-    const { isOpen, onClose, modalTitle, fields, submitUrl } = props;
+    const { isOpen, onClose, modalTitle, fields, onSubmit } = props;
 
     const { data, setData, post, processing } = useForm(
         fields.reduce((result, field) => {
@@ -34,10 +34,9 @@ const FormModal = props => {
 
     // フォーム送信
     const handleSubmit = () => {
-        post(submitUrl, {
-            onSuccess: () => onClose(),
-        });
+        onSubmit(data);
     };
+
     return (
         <ChakraModal
             isOpen={isOpen}

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
-            $table->string('officeNumber')->unique()->comment('オフィス番号');
-            $table->string('officeName')->comment('オフィス名');
-            $table->string('officePassword')->comment('パスワード');
+            $table->string('office_number')->unique()->comment('オフィス番号');
+            $table->string('office_name')->comment('オフィス名');
+            $table->string('office_description')->comment('オフィス概要');
+            $table->string('office_password')->comment('パスワード');
             $table->timestamps();
         });
     }
