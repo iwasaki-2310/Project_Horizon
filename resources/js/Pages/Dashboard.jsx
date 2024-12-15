@@ -13,7 +13,7 @@ import {
     UnorderedList,
 } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserModal from '@/Components/Modal/FormModal';
 import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
@@ -22,6 +22,8 @@ import axios from 'axios';
 export default function Dashboard({ auth, initialOffices }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
+    const [newOffice, setNewOffice] = useState(null);
+    console.log(offices);
 
     //   全体を囲うラッパー
     const DashContainer = ({ children }) => {
@@ -67,17 +69,29 @@ export default function Dashboard({ auth, initialOffices }) {
         setIsModalOpen(false);
     };
 
-    const handleSubmit = data => {
-        axios
-            .post(route('dashboard.createOffice'), data)
-            .then(response => {
-                setOffices([...offices, response.data.office]);
-                closeModal();
-            })
-            .catch(error => {
-                console.error('オフィスの作成に失敗しました', error);
-            });
+    const handleSubmit = async data => {
+        console.log('data:', data);
+
+        try {
+            const response = await axios.post(
+                route('dashboard.createOffice'),
+                data
+            );
+            console.log('response.data:', response);
+            const newOffice = response.data.office;
+            console.log('newOffice:', newOffice);
+            setOffices(prevOffices => [...prevOffices, newOffice]);
+            closeModal();
+        } catch (error) {
+            console.error('オフィスの作成に失敗しました', error);
+        }
     };
+
+    // useEffect(() => {
+    //     if (newOffice) {
+    //         setOffices(prevOffices => [...prevOffices, newOffice]);
+    //     }
+    // }, [newOffice]);
 
     const fields = [
         {
@@ -101,7 +115,7 @@ export default function Dashboard({ auth, initialOffices }) {
             placeHolder: 'オフィスのパスワードを入力してください',
         },
     ];
-    console.log(offices);
+    // console.log(offices);
 
     return (
         <>
@@ -129,10 +143,10 @@ export default function Dashboard({ auth, initialOffices }) {
                             onSubmit={handleSubmit}
                         />
                         <UnorderedList>
-                            {offices.map((office, index) => {
+                            {offices.map(office => {
                                 return (
-                                    <ListItem key={index}>
-                                        {office.office_name}
+                                    <ListItem key={office.id}>
+                                        {office?.office_name}
                                     </ListItem>
                                 );
                             })}

@@ -24,7 +24,7 @@ class DashboardController extends Controller
     public function createOffice(Request $request)
     {
         try {
-            DB::transaction(function () use ($request) {
+            $office = DB::transaction(function () use ($request) {
                 $validateData = $request->validate([
                     'office_number' => 'required | numeric | max:999',
                     'office_name' => 'required | string | max:30',
@@ -33,13 +33,15 @@ class DashboardController extends Controller
                 ]);
 
                 $office = Office::create($validateData);
-                Log::info("OfficeId:{$request->office_number} The office has been successfully created.");
+                Log::info("オフィス作成完了,追加されたオフィスID: {$office->id}");
 
-                return response()->json([
-                    'message' => "OfficeId:{$request->office_number} The office has been successfully created.",
-                    'office' => $office,
-                ]);
+                return $office;
             });
+
+            return response()->json([
+                'message' => "OfficeId:{$request->office_number} The office has been successfully created.",
+                'office' => $office,
+            ]);
         } catch (Exception $e) {
             Log::error($e);
             dd($e);
