@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('office_number')->unique()->comment('オフィス番号');
             $table->string('office_name')->comment('オフィス名');
             $table->string('office_description')->comment('オフィス概要');
+            $table->integer('member_count')->default(0)->comment('現在の参加人数');
             $table->string('office_password')->comment('パスワード');
             $table->timestamps();
         });

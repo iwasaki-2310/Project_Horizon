@@ -6,11 +6,19 @@ import {
     Box,
     Button,
     Container,
+    Flex,
     Grid,
     Heading,
+    Link,
     ListItem,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalHeader,
+    ModalOverlay,
     Text,
     UnorderedList,
+    useDisclosure,
 } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -18,11 +26,15 @@ import UserModal from '@/Components/Modal/FormModal';
 import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
 import axios from 'axios';
+import { InfoIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import OfficeInfoModal from '@/Components/Modal/OfficeInfoModal';
 
 export default function Dashboard({ auth, initialOffices }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
     const [newOffice, setNewOffice] = useState(null);
+    const [selectedOffice, setSelectedOffice] = useState();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     console.log(offices);
 
     //   全体を囲うラッパー
@@ -42,9 +54,27 @@ export default function Dashboard({ auth, initialOffices }) {
                 pb="8"
                 px="4"
                 minH="200px"
+                maxH="60vh"
                 borderRadius="md"
                 boxShadow="md"
             >
+                {children}
+            </Box>
+        );
+    };
+
+    // コンテントヘッダー
+    const ContentHeader = ({ children }) => {
+        return (
+            <Flex justifyContent="space-between" alignItems="center">
+                {children}
+            </Flex>
+        );
+    };
+    // コンテントのスクロール部分
+    const ScrollArea = ({ children }) => {
+        return (
+            <Box overflow="scroll" mt="5" h="90%">
                 {children}
             </Box>
         );
@@ -87,11 +117,11 @@ export default function Dashboard({ auth, initialOffices }) {
         }
     };
 
-    // useEffect(() => {
-    //     if (newOffice) {
-    //         setOffices(prevOffices => [...prevOffices, newOffice]);
-    //     }
-    // }, [newOffice]);
+    // 選択したオフィスのオフィス情報をモーダルに渡す中間関数
+    const handleOpenOfficeInfoModal = office => {
+        setSelectedOffice(office);
+        onOpen();
+    };
 
     const fields = [
         {
@@ -130,11 +160,14 @@ export default function Dashboard({ auth, initialOffices }) {
                 <Head title="Dashboard" />
                 <DashContainer>
                     <DashContent>
-                        <ContentTitle>オフィス</ContentTitle>
+                        <ContentHeader>
+                            <ContentTitle>オフィス</ContentTitle>
 
-                        <PrimaryButton onClick={showModal}>
-                            オフィスを新規作成
-                        </PrimaryButton>
+                            <PrimaryButton onClick={showModal}>
+                                オフィスを新規作成
+                            </PrimaryButton>
+                        </ContentHeader>
+
                         <FormModal
                             isOpen={isModalOpen}
                             onClose={closeModal}
@@ -142,15 +175,40 @@ export default function Dashboard({ auth, initialOffices }) {
                             fields={fields}
                             onSubmit={handleSubmit}
                         />
-                        <UnorderedList>
-                            {offices.map(office => {
-                                return (
-                                    <ListItem key={office.id}>
-                                        {office?.office_name}
-                                    </ListItem>
-                                );
-                            })}
-                        </UnorderedList>
+                        <ScrollArea>
+                            <UnorderedList>
+                                {offices.map(office => {
+                                    return (
+                                        <ListItem
+                                            key={office.id}
+                                            py={3}
+                                            pr={4}
+                                            borderBottom="1px solid rgba(128, 128, 128, .2)"
+                                            _last={{ borderBottom: 'none' }}
+                                        >
+                                            <Flex justifyContent="space-between">
+                                                <Link href="" fontWeight="bold">
+                                                    {office?.office_name}
+                                                </Link>
+                                                <InfoOutlineIcon
+                                                    cursor="pointer"
+                                                    onClick={() =>
+                                                        handleOpenOfficeInfoModal(
+                                                            office
+                                                        )
+                                                    }
+                                                />
+                                            </Flex>
+                                        </ListItem>
+                                    );
+                                })}
+                                <OfficeInfoModal
+                                    isOpen={isOpen}
+                                    onClose={onClose}
+                                    officeInfo={selectedOffice}
+                                />
+                            </UnorderedList>
+                        </ScrollArea>
                     </DashContent>
                     <DashContent>
                         <ContentTitle>交換した名刺</ContentTitle>
