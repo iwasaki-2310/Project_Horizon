@@ -34,8 +34,8 @@ export default function Dashboard({ auth, initialOffices }) {
     const [offices, setOffices] = useState(initialOffices || []);
     const [newOffice, setNewOffice] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState();
+    const [errors, setErrors] = useState({});
     const { isOpen, onOpen, onClose } = useDisclosure();
-    console.log(offices);
 
     //   全体を囲うラッパー
     const DashContainer = ({ children }) => {
@@ -113,7 +113,13 @@ export default function Dashboard({ auth, initialOffices }) {
             setOffices(prevOffices => [...prevOffices, newOffice]);
             closeModal();
         } catch (error) {
-            console.error('オフィスの作成に失敗しました', error);
+            if (error.response && error.response.status === 500) {
+                // バリデーションエラーをモーダルに渡す
+                setErrors(error.response.data.error);
+                console.log(error.response.data.error);
+            } else {
+                console.error('予期しないエラーです。', error);
+            }
         }
     };
 
@@ -124,11 +130,6 @@ export default function Dashboard({ auth, initialOffices }) {
     };
 
     const fields = [
-        {
-            label: 'オフィス番号',
-            name: 'office_number',
-            placeHolder: 'オフィス番号を入力してください',
-        },
         {
             label: 'オフィス名',
             name: 'office_name',
@@ -174,6 +175,7 @@ export default function Dashboard({ auth, initialOffices }) {
                             modalTitle={'オフィスの新規作成'}
                             fields={fields}
                             onSubmit={handleSubmit}
+                            errors={errors}
                         />
                         <ScrollArea>
                             <UnorderedList>

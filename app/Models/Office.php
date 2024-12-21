@@ -11,9 +11,9 @@ class Office extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'office_number',
         'office_name',
         'office_description',
+        'member_count',
         'office_password',
     ];
 }

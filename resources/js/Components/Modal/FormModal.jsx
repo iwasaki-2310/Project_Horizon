@@ -12,6 +12,7 @@ import {
     ModalOverlay,
     Stack,
     ModalFooter,
+    Text,
 } from '@chakra-ui/react';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
@@ -19,7 +20,7 @@ import { PrimaryButton } from '../PrimaryButton';
 import { CancelButton } from '../CancelButton';
 
 const FormModal = props => {
-    const { isOpen, onClose, modalTitle, fields, onSubmit } = props;
+    const { isOpen, onClose, modalTitle, fields, onSubmit, errors } = props;
 
     const { data, setData, post, processing } = useForm(
         fields.reduce((result, field) => {
@@ -50,6 +51,11 @@ const FormModal = props => {
                     <ModalCloseButton />
                     <ModalBody mx={4}>
                         <Stack spacing={4}>
+                            {errors && (
+                                <Text color="red.500" fontSize="sm">
+                                    {errors}
+                                </Text>
+                            )}
                             {fields.map((field, index) => (
                                 <FormControl>
                                     <FormLabel>{field.label}</FormLabel>

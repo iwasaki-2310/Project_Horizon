@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
-            $table->string('office_number')->unique()->comment('オフィス番号');
             $table->string('office_name')->comment('オフィス名');
             $table->string('office_description')->comment('オフィス概要');
             $table->integer('member_count')->default(0)->comment('現在の参加人数');
