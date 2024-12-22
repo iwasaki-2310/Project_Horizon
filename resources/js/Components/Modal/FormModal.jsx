@@ -51,11 +51,11 @@ const FormModal = props => {
                     <ModalCloseButton />
                     <ModalBody mx={4}>
                         <Stack spacing={4}>
-                            {errors && (
-                                <Text color="red.500" fontSize="sm">
-                                    {errors}
+                            {Object.entries(errors).map(([key, value]) => (
+                                <Text key={key} color="red.500" fontSize="sm">
+                                    {value}
                                 </Text>
-                            )}
+                            ))}
                             {fields.map((field, index) => (
                                 <FormControl>
                                     <FormLabel>{field.label}</FormLabel>

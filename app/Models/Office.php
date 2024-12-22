@@ -16,4 +16,11 @@ class Office extends Authenticatable
         'member_count',
         'office_password',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'office_user')
+            ->withPivot('entered_at')
+            ->withTimestamps();
+    }
 }

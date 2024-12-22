@@ -25,7 +25,10 @@ class DashboardController extends Controller
     public function createOffice(Request $request)
     {
         try {
-            $office = DB::transaction(function () use ($request) {
+
+            $user = $request->user();
+
+            $office = DB::transaction(function () use ($request, $user) {
                 $validateData = $request->validate([
                     'office_name' => 'required|string|regex:/^[A-Za-z0-9\-]+$/|max:30',
                     'office_description' => 'required|string|max:100',
@@ -45,8 +48,13 @@ class DashboardController extends Controller
 
                 $validateData['member_count'] = 1;
 
-                // dd($validateData);
                 $office = Office::create($validateData);
+
+                // オフィス作成者を中間テーブルに登録
+                $office->users()->syncWithoutDetaching([
+                    $user->id => ['entered_at' => now()],
+                ]);
+
                 Log::info("オフィス作成完了,追加されたオフィスID: {$office->id}");
 
                 return $office;
@@ -59,7 +67,7 @@ class DashboardController extends Controller
         } catch (Exception $e) {
             Log::error($e);
             return response()->json([
-                'message' => 'Failed to create office.',
+                'message' => 'エラーが発生しました。',
                 'error' => $e->getMessage(),
             ], 500);
         }

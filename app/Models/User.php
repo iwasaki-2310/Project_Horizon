@@ -72,4 +72,11 @@ class User extends Authenticatable
         // ここをpasswordからencrypted_passwordに変更する
         return $this->encrypted_password;
     }
+
+    public function offices()
+    {
+        return $this->belongsToMany(Office::class, 'office_user')
+            ->withPivot('entered_at')
+            ->withTimestamps();
+    }
 }

@@ -115,7 +115,7 @@ export default function Dashboard({ auth, initialOffices }) {
         } catch (error) {
             if (error.response && error.response.status === 500) {
                 // バリデーションエラーをモーダルに渡す
-                setErrors(error.response.data.error);
+                setErrors(error.response.data);
                 console.log(error.response.data.error);
             } else {
                 console.error('予期しないエラーです。', error);
