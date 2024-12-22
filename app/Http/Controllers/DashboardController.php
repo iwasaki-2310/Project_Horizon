@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Office;
 use App\Models\User;
+use CreateOfficeUserTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Contracts\Support\ValidatedData;
@@ -13,9 +14,16 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
+    protected $user;
+
+    public function __construct(Request $request)
+    {
+        $this->user = $request->user();
+    }
+
     public function index()
     {
-        $offices = Office::all();
+        $offices = $this->user->offices()->get();
         // dd($offices);
         return inertia::render('Dashboard', [
             'initialOffices' => $offices,
