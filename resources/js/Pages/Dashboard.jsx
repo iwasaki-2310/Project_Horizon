@@ -27,7 +27,8 @@ import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
 import axios from 'axios';
 import { InfoIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import OfficeInfoModal from '@/Components/Modal/OfficeInfoModal';
+import OfficeInfoModal from '@/Components/Modal/InfoModal';
+import InfoModal from '@/Components/Modal/InfoModal';
 
 export default function Dashboard({ auth, initialOffices }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -189,7 +190,10 @@ export default function Dashboard({ auth, initialOffices }) {
                                             _last={{ borderBottom: 'none' }}
                                         >
                                             <Flex justifyContent="space-between">
-                                                <Link href="" fontWeight="bold">
+                                                <Link
+                                                    href={`/office/${office.office_name}`}
+                                                    fontWeight="bold"
+                                                >
                                                     {office?.office_name}
                                                 </Link>
                                                 <InfoOutlineIcon
@@ -204,7 +208,7 @@ export default function Dashboard({ auth, initialOffices }) {
                                         </ListItem>
                                     );
                                 })}
-                                <OfficeInfoModal
+                                <InfoModal
                                     isOpen={isOpen}
                                     onClose={onClose}
                                     officeInfo={selectedOffice}

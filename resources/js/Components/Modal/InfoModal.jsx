@@ -22,7 +22,7 @@ import { useEffect } from 'react';
 import { PrimaryButton } from '../PrimaryButton';
 import { CancelButton } from '../CancelButton';
 
-const OfficeInfoModal = props => {
+const InfoModal = props => {
     const { isOpen, onClose, officeInfo } = props;
 
     const InfoItem = ({ infoLabel, infoValue }) => {
@@ -75,4 +75,4 @@ const OfficeInfoModal = props => {
     );
 };
 
-export default OfficeInfoModal;
+export default InfoModal;

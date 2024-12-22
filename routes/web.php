@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,10 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::post('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::prefix('/office')->group(function () {
+    Route::get('/{officeName}', [OfficeController::class, 'show'])->name('office.show');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
