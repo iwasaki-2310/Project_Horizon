@@ -9,6 +9,8 @@ import {
     Flex,
     Grid,
     Heading,
+    Image,
+    Img,
     Link,
     ListItem,
     ModalBody,
@@ -26,69 +28,23 @@ import UserModal from '@/Components/Modal/FormModal';
 import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
 import axios from 'axios';
-import { InfoIcon, InfoOutlineIcon } from '@chakra-ui/icons';
+import { BellIcon, InfoIcon, InfoOutlineIcon, LinkIcon } from '@chakra-ui/icons';
 import OfficeInfoModal from '@/Components/Modal/InfoModal';
 import InfoModal from '@/Components/Modal/InfoModal';
+import DashContainer from '@/Components/DashBoard/DashContainer';
+import DashContent from '@/Components/DashBoard/DashContent';
+import ContentHeader from '@/Components/DashBoard/ContentHeader';
+import ScrollArea from '@/Components/DashBoard/ScrollArea';
+import ContentTitle from '@/Components/DashBoard/ContentTitle';
 
 export default function Dashboard({ auth, initialOffices }) {
+    const iconsPath = '/icons';
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
     const [newOffice, setNewOffice] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState();
     const [errors, setErrors] = useState({});
     const { isOpen, onOpen, onClose } = useDisclosure();
-
-    //   全体を囲うラッパー
-    const DashContainer = ({ children }) => {
-        return (
-            <Grid templateColumns="repeat(2,1fr)" gap={6} px={5} py={6}>
-                {children}
-            </Grid>
-        );
-    };
-    //   コンテントコンポーネント
-    const DashContent = ({ children }) => {
-        return (
-            <Box
-                bg="gray.50"
-                pt="5"
-                pb="8"
-                px="4"
-                minH="200px"
-                maxH="60vh"
-                borderRadius="md"
-                boxShadow="md"
-            >
-                {children}
-            </Box>
-        );
-    };
-
-    // コンテントヘッダー
-    const ContentHeader = ({ children }) => {
-        return (
-            <Flex justifyContent="space-between" alignItems="center">
-                {children}
-            </Flex>
-        );
-    };
-    // コンテントのスクロール部分
-    const ScrollArea = ({ children }) => {
-        return (
-            <Box overflow="scroll" mt="5" h="90%">
-                {children}
-            </Box>
-        );
-    };
-
-    //   コンテントタイトル
-    const ContentTitle = ({ children }) => {
-        return (
-            <Heading as="h2" color="gray.600" fontWeight="bold" size="sm">
-                {children}
-            </Heading>
-        );
-    };
 
     //モーダルオープン
     const showModal = () => {
@@ -147,7 +103,6 @@ export default function Dashboard({ auth, initialOffices }) {
             placeHolder: 'オフィスのパスワードを入力してください',
         },
     ];
-    // console.log(offices);
 
     return (
         <>
@@ -163,8 +118,15 @@ export default function Dashboard({ auth, initialOffices }) {
                 <DashContainer>
                     <DashContent>
                         <ContentHeader>
-                            <ContentTitle>オフィス</ContentTitle>
-
+                            <Flex alignItems="center">
+                                <ContentTitle>オフィス</ContentTitle>
+                                <Flex alignItems="center" ml={5}>
+                                    <Box>
+                                        <BellIcon fontSize="20px" mb="5px" mr="5px" />
+                                    </Box>
+                                    <Link color='red.600'>新しく招待されたオフィスがあります！</Link>
+                                </Flex>
+                            </Flex>
                             <PrimaryButton onClick={showModal}>
                                 オフィスを新規作成
                             </PrimaryButton>
@@ -190,20 +152,22 @@ export default function Dashboard({ auth, initialOffices }) {
                                             _last={{ borderBottom: 'none' }}
                                         >
                                             <Flex justifyContent="space-between">
-                                                <Link
-                                                    href={`/office/${office.office_name}`}
-                                                    fontWeight="bold"
-                                                >
-                                                    {office?.office_name}
-                                                </Link>
-                                                <InfoOutlineIcon
-                                                    cursor="pointer"
-                                                    onClick={() =>
-                                                        handleOpenOfficeInfoModal(
-                                                            office
-                                                        )
-                                                    }
-                                                />
+                                                <Text fontWeight="bold">{office?.office_name}</Text>
+                                                <Flex alignItems="center">
+                                                    <Link href={`/office/${office.office_name}`}>
+                                                        <Image src={`${iconsPath}/enter.png`} w="40px" cursor="pointer" />
+                                                    </Link>
+                                                    <LinkIcon ml={2} />
+                                                    <InfoOutlineIcon
+                                                        cursor="pointer"
+                                                        ml={4}
+                                                        onClick={() =>
+                                                            handleOpenOfficeInfoModal(
+                                                                office
+                                                            )
+                                                        }
+                                                    />
+                                                </Flex>
                                             </Flex>
                                         </ListItem>
                                     );
