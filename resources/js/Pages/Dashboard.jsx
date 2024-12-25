@@ -36,24 +36,37 @@ import DashContent from '@/Components/DashBoard/DashContent';
 import ContentHeader from '@/Components/DashBoard/ContentHeader';
 import ScrollArea from '@/Components/DashBoard/ScrollArea';
 import ContentTitle from '@/Components/DashBoard/ContentTitle';
+import SecondaryButton from '@/Components/SecondaryButton';
+import SearchModal from '@/Components/Modal/SearchModal';
 
 export default function Dashboard({ auth, initialOffices }) {
     const iconsPath = '/icons';
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSerchOfficeModalOpen, setIsSerchOfficeModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
     const [newOffice, setNewOffice] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState();
     const [errors, setErrors] = useState({});
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    //モーダルオープン
+    // モーダルオープン
     const showModal = () => {
         setIsModalOpen(true);
     };
 
-    //   モーダルクローズ
+    // モーダルクローズ
     const closeModal = () => {
         setIsModalOpen(false);
+    };
+
+    // オフィスを探すモーダルオープン
+    const showSearchOfficeModal = () => {
+        setIsSerchOfficeModalOpen(true);
+    };
+
+    // オフィスを探すモーダルクローズ
+    const closeshowSearchOfficeModal = () => {
+        setIsSerchOfficeModalOpen(false);
     };
 
     const handleSubmit = async data => {
@@ -104,6 +117,17 @@ export default function Dashboard({ auth, initialOffices }) {
         },
     ];
 
+    // オフィスを探すモーダルに渡すカラム名
+    const searchOfficeTableCols = ['オフィス名', 'オフィス概要', '参加人数'];
+    // オフィスを探すモーダルに渡すテーブルの値
+    const searchOfficeTableDatas = offices.map(officeData => ({
+        office_name: officeData.office_name,
+        office_description: officeData.office_description,
+        office_memberCount: officeData.member_count,
+    }))
+
+
+
     return (
         <>
             <AuthenticatedLayout
@@ -120,18 +144,28 @@ export default function Dashboard({ auth, initialOffices }) {
                         <ContentHeader>
                             <Flex alignItems="center">
                                 <ContentTitle>オフィス</ContentTitle>
-                                <Flex alignItems="center" ml={5}>
-                                    <Box>
-                                        <BellIcon fontSize="20px" mb="5px" mr="5px" />
-                                    </Box>
-                                    <Link color='red.600'>新しく招待されたオフィスがあります！</Link>
-                                </Flex>
                             </Flex>
-                            <PrimaryButton onClick={showModal}>
-                                オフィスを新規作成
-                            </PrimaryButton>
+                            <Flex alignItems="center">
+                                <SecondaryButton onClick={showSearchOfficeModal}>
+                                    オフィスを探す
+                                </SecondaryButton>
+                                <PrimaryButton onClick={showModal} ml="15px">
+                                    オフィスを新規作成
+                                </PrimaryButton>
+                            </Flex>
                         </ContentHeader>
 
+
+                        {/* オフィスを探すモーダル */}
+                        <SearchModal
+                            isOpen={isSerchOfficeModalOpen}
+                            onClose={closeshowSearchOfficeModal}
+                            modalTitle={'オフィスを探す'}
+                            tableColumns={searchOfficeTableCols}
+                            tableData={searchOfficeTableDatas}
+                            iconPath={`${iconsPath}/enter.png`}
+                        />
+                        {/* オフィス新規作成モーダル */}
                         <FormModal
                             isOpen={isModalOpen}
                             onClose={closeModal}

@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react';
 
-export const PrimaryButton = ({ children, onClick, type = 'button' }) => {
+export const PrimaryButton = ({ children, onClick, type = 'button', ...props}) => {
     return (
         <Button
             bg="blue.500"
@@ -10,6 +10,7 @@ export const PrimaryButton = ({ children, onClick, type = 'button' }) => {
             }}
             type={type}
             onClick={onClick}
+            {...props}
         >
             {children}
         </Button>
