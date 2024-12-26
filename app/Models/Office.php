@@ -12,7 +12,9 @@ class Office extends Authenticatable
 
     protected $fillable = [
         'office_name',
+        'office_url',
         'office_description',
+        'public_flag',
         'member_count',
         'office_password',
     ];

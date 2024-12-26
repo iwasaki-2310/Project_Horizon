@@ -73,6 +73,7 @@ export default function Dashboard({ auth, initialOffices }) {
         console.log('data:', data);
 
         try {
+            // console.log(data);
             const response = await axios.post(
                 route('dashboard.createOffice'),
                 data
@@ -101,16 +102,34 @@ export default function Dashboard({ auth, initialOffices }) {
 
     const fields = [
         {
+            inputType: 'text',
             label: 'オフィス名',
             name: 'office_name',
             placeHolder: 'オフィスの名前を入力してください',
         },
         {
+            inputType: 'text',
+            label: 'オフィスURL',
+            name: 'office_url',
+            placeHolder: '（例）my-office',
+        },
+        {
+            inputType: 'text',
             label: 'オフィス概要',
             name: 'office_description',
             placeHolder: 'オフィスの概要を入力してください',
         },
         {
+            inputType: 'selected',
+            label: '公開設定',
+            options: [
+                { label: '公開', value: 1 },
+                { label: '非公開', value: 0 },
+            ],
+            name: 'office_public_flag',
+        },
+        {
+            inputType: 'text',
             label: 'パスワード',
             name: 'office_password',
             placeHolder: 'オフィスのパスワードを入力してください',
@@ -188,7 +207,7 @@ export default function Dashboard({ auth, initialOffices }) {
                                             <Flex justifyContent="space-between">
                                                 <Text fontWeight="bold">{office?.office_name}</Text>
                                                 <Flex alignItems="center">
-                                                    <Link href={`/office/${office.office_name}`}>
+                                                    <Link href={`/office/${office.office_url}`}>
                                                         <Image src={`${iconsPath}/enter.png`} w="40px" cursor="pointer" />
                                                     </Link>
                                                     <LinkIcon ml={2} />

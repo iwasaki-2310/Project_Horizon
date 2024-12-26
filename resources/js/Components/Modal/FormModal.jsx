@@ -13,6 +13,7 @@ import {
     Stack,
     ModalFooter,
     Text,
+    Select,
 } from '@chakra-ui/react';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
@@ -24,12 +25,14 @@ const FormModal = props => {
 
     const { data, setData, post, processing } = useForm(
         fields.reduce((result, field) => {
-            result[field.name] = '';
+            // フィールドに初期値がある場合、それを使用
+            result[field.name] = field.defaultValue || (field.inputType === 'selected' ? '1' : '');
             return result;
         }, {})
     );
 
     const handleChange = e => {
+        console.log(`Field: ${e.target.name}, Value: ${e.target.value}`);
         setData(e.target.name, e.target.value);
     };
 
@@ -59,12 +62,19 @@ const FormModal = props => {
                             {fields.map((field, index) => (
                                 <FormControl>
                                     <FormLabel>{field.label}</FormLabel>
-                                    <Input
-                                        name={field.name}
-                                        value={data[field.name]}
-                                        onChange={handleChange}
-                                        placeholder={field.placeHolder}
-                                    />
+                                    {field.inputType == "text" ?
+                                        <Input
+                                            name={field.name}
+                                            value={data[field.name]}
+                                            onChange={handleChange}
+                                            placeholder={field.placeHolder && field.placeHolder}
+                                        />:
+                                        <Select name={field.name} value={data[field.name]} onChange={handleChange}>
+                                            {field.options.map((option, optionIndex) => (
+                                                <option key={optionIndex} value={option.value}>{option.label}</option>
+                                            ))}
+                                        </Select>
+                                    }
                                 </FormControl>
                             ))}
                         </Stack>
