@@ -11,7 +11,9 @@ const DashContent = ({ children }) => {
             minH="200px"
             maxH="60vh"
             borderRadius="md"
+            border="2px solid white"
             boxShadow="md"
+            background="inherit"
         >
             {children}
         </Box>

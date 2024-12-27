@@ -59,20 +59,27 @@ const SearchModal = props => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                {tableData.map((data, rowIndex) => (
+
+                                {/* 表示を許容している値のみ表示 */}
+                                {tableData.map((data, rowIndex) => ( //レコード単位に分割
                                     <Tr key={rowIndex}>
-                                        {Object.values(data).map((value, colIndex) => (
-                                            <Td key={colIndex}>
-                                                {typeof value === 'object' && value !== null ? JSON.stringify(value) : value}
-                                            </Td>
+                                        {Object.values(data).map((parentKeys, colIndex) => ( //親キー単位に分割
+                                            parentKeys['isAddColumn'] === true ? (
+                                                <Td key={colIndex}>
+                                                    {parentKeys['value']}
+                                                </Td>
+                                            ) : null
                                         ))}
-                                        <Td>
-                                            <Link href=''>
-                                                <Image src={iconPath} w="40px" cursor="pointer" />
-                                            </Link>
-                                        </Td>
+                                        {data['url'] && (
+                                            <Td>
+                                                <Link href={`/office/${data['url']['value']}`}>
+                                                    <Image src={iconPath} w="25px" cursor="pointer" />
+                                                </Link>
+                                            </Td>
+                                        )}
                                     </Tr>
                                 ))}
+
                                 </Tbody>
                             </Table>
                         </TableContainer>

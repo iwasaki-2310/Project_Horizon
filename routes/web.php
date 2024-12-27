@@ -36,7 +36,7 @@ Route::prefix('dashboard')->group(function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::prefix('/office')->group(function () {
-    Route::get('/{officeName}', [OfficeController::class, 'show'])->name('office.show');
+    Route::get('/{officeUrl}', [OfficeController::class, 'show'])->name('office.show');
 });
 
 Route::middleware('auth')->group(function () {

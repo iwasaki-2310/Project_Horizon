@@ -38,12 +38,15 @@ import ScrollArea from '@/Components/DashBoard/ScrollArea';
 import ContentTitle from '@/Components/DashBoard/ContentTitle';
 import SecondaryButton from '@/Components/SecondaryButton';
 import SearchModal from '@/Components/Modal/SearchModal';
+import ContentSubtlte from '@/Components/DashBoard/ContentSubtlte';
+import ContentBody from '@/Components/DashBoard/ContentBody';
 
 export default function Dashboard({ auth, initialOffices }) {
     const iconsPath = '/icons';
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSerchOfficeModalOpen, setIsSerchOfficeModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
+    const [publicOffices, setPublicOffices] = useState([]);
     const [newOffice, setNewOffice] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState();
     const [errors, setErrors] = useState({});
@@ -70,17 +73,13 @@ export default function Dashboard({ auth, initialOffices }) {
     };
 
     const handleSubmit = async data => {
-        console.log('data:', data);
 
         try {
-            // console.log(data);
             const response = await axios.post(
                 route('dashboard.createOffice'),
                 data
             );
-            console.log('response.data:', response);
             const newOffice = response.data.office;
-            console.log('newOffice:', newOffice);
             setOffices(prevOffices => [...prevOffices, newOffice]);
             closeModal();
         } catch (error) {
@@ -136,14 +135,40 @@ export default function Dashboard({ auth, initialOffices }) {
         },
     ];
 
+    useEffect(() => {
+        const newPublicOffices = offices.filter(office => office.public_flag === "1");
+        setPublicOffices(newPublicOffices);
+    }, [offices]);
+
     // オフィスを探すモーダルに渡すカラム名
     const searchOfficeTableCols = ['オフィス名', 'オフィス概要', '参加人数'];
     // オフィスを探すモーダルに渡すテーブルの値
-    const searchOfficeTableDatas = offices.map(officeData => ({
-        office_name: officeData.office_name,
-        office_description: officeData.office_description,
-        office_memberCount: officeData.member_count,
-    }))
+    const searchOfficeTableDatas = publicOffices.map(officeData => ({
+        office_name: {
+            isAddColumn: true,
+            value: officeData.office_name,
+        },
+        office_description: {
+            isAddColumn: true,
+            value: officeData.office_description,
+        },
+        office_public_flag: {
+            isAddColumn: false,
+            value: officeData.public_flag,
+        },
+        office_memberCount: {
+            isAddColumn: true,
+            value: officeData.member_count,
+        },
+        url: {
+            isAddColumn: false,
+            value: officeData.office_url,
+        }
+    }));
+
+
+
+    console.log(publicOffices);
 
 
 
@@ -182,7 +207,7 @@ export default function Dashboard({ auth, initialOffices }) {
                             modalTitle={'オフィスを探す'}
                             tableColumns={searchOfficeTableCols}
                             tableData={searchOfficeTableDatas}
-                            iconPath={`${iconsPath}/enter.png`}
+                            iconPath={`${iconsPath}/enter_black.svg`}
                         />
                         {/* オフィス新規作成モーダル */}
                         <FormModal
@@ -193,45 +218,49 @@ export default function Dashboard({ auth, initialOffices }) {
                             onSubmit={handleSubmit}
                             errors={errors}
                         />
-                        <ScrollArea>
-                            <UnorderedList>
-                                {offices.map(office => {
-                                    return (
-                                        <ListItem
-                                            key={office.id}
-                                            py={3}
-                                            pr={4}
-                                            borderBottom="1px solid rgba(128, 128, 128, .2)"
-                                            _last={{ borderBottom: 'none' }}
-                                        >
-                                            <Flex justifyContent="space-between">
-                                                <Text fontWeight="bold">{office?.office_name}</Text>
-                                                <Flex alignItems="center">
-                                                    <Link href={`/office/${office.office_url}`}>
-                                                        <Image src={`${iconsPath}/enter.png`} w="40px" cursor="pointer" />
-                                                    </Link>
-                                                    <LinkIcon ml={2} />
-                                                    <InfoOutlineIcon
-                                                        cursor="pointer"
-                                                        ml={4}
-                                                        onClick={() =>
-                                                            handleOpenOfficeInfoModal(
-                                                                office
-                                                            )
-                                                        }
-                                                    />
+                        <ContentBody>
+                            <ContentSubtlte>入室済みオフィス</ContentSubtlte>
+                            <ScrollArea>
+                                <UnorderedList>
+                                    {offices.map(office => {
+                                        return (
+                                            <ListItem
+                                                key={office.id}
+                                                py={3}
+                                                pr={4}
+                                                borderBottom="1px solid white"
+                                                _last={{ borderBottom: 'none' }}
+                                            >
+                                                <Flex justifyContent="space-between">
+                                                    <Text fontWeight="bold" color="white">{office?.office_name}</Text>
+                                                    <Flex alignItems="center">
+                                                        <Link href={`/office/${office.office_url}`}>
+                                                            <Image src={`${iconsPath}/enter_white.svg`} w="25px" cursor="pointer" />
+                                                        </Link>
+                                                        <LinkIcon ml={4} color="white" />
+                                                        <InfoOutlineIcon
+                                                            color="white"
+                                                            cursor="pointer"
+                                                            ml={4}
+                                                            onClick={() =>
+                                                                handleOpenOfficeInfoModal(
+                                                                    office
+                                                                )
+                                                            }
+                                                        />
+                                                    </Flex>
                                                 </Flex>
-                                            </Flex>
-                                        </ListItem>
-                                    );
-                                })}
-                                <InfoModal
-                                    isOpen={isOpen}
-                                    onClose={onClose}
-                                    officeInfo={selectedOffice}
-                                />
-                            </UnorderedList>
-                        </ScrollArea>
+                                            </ListItem>
+                                        );
+                                    })}
+                                    <InfoModal
+                                        isOpen={isOpen}
+                                        onClose={onClose}
+                                        officeInfo={selectedOffice}
+                                    />
+                                </UnorderedList>
+                            </ScrollArea>
+                        </ContentBody>
                     </DashContent>
                     <DashContent>
                         <ContentTitle>交換した名刺</ContentTitle>

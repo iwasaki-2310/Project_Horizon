@@ -39,7 +39,6 @@ const InfoModal = props => {
         );
     };
 
-    console.log(officeInfo);
     return (
         <ChakraModal
             isOpen={isOpen}
@@ -65,6 +64,10 @@ const InfoModal = props => {
                                 <InfoItem
                                     infoLabel="参加人数"
                                     infoValue={officeInfo?.member_count}
+                                />
+                                <InfoItem
+                                    infoLabel="公開情報"
+                                    infoValue={officeInfo?.public_flag === '0' ? '非公開' : '公開'}
                                 />
                             </UnorderedList>
                         </Stack>

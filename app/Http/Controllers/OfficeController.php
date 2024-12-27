@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Log;
 class OfficeController extends Controller
 {
 
-    public function show($officeName)
+    public function show($officeUrl)
     {
-        $office = Office::where('office_name', $officeName)->firstOrFail();
+        $office = Office::where('office_url', $officeUrl)->firstOrFail();
 
         return Inertia::render('Office/OfficeTop', [
             'office' => $office,

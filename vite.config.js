@@ -9,7 +9,7 @@ export default defineConfig({
         strictPort: true, // ポートが使用中の場合にエラーを出す
         hmr: {
             host: 'localhost', // ホストマシンのホスト名
-            port: 7777, // ホストマシンのポート
+            port: 5174, // ホストマシンのポート
         },
     },
     plugins: [
