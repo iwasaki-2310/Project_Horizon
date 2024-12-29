@@ -41,12 +41,12 @@ import SearchModal from '@/Components/Modal/SearchModal';
 import ContentSubtlte from '@/Components/DashBoard/ContentSubtlte';
 import ContentBody from '@/Components/DashBoard/ContentBody';
 
-export default function Dashboard({ auth, initialOffices }) {
+export default function Dashboard({ auth, initialOffices, initialPublicOffices, userInfo }) {
     const iconsPath = '/icons';
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSerchOfficeModalOpen, setIsSerchOfficeModalOpen] = useState(false);
     const [offices, setOffices] = useState(initialOffices || []);
-    const [publicOffices, setPublicOffices] = useState([]);
+    const [publicOffices, setPublicOffices] = useState(initialPublicOffices || []);
     const [newOffice, setNewOffice] = useState(null);
     const [selectedOffice, setSelectedOffice] = useState();
     const [errors, setErrors] = useState({});
@@ -81,6 +81,10 @@ export default function Dashboard({ auth, initialOffices }) {
             );
             const newOffice = response.data.office;
             setOffices(prevOffices => [...prevOffices, newOffice]);
+            if(newOffice.public_flag === '1') {
+                setPublicOffices(prevOffices => [...prevOffices, newOffice]);
+            }
+            console.log(newOffice);
             closeModal();
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -135,10 +139,12 @@ export default function Dashboard({ auth, initialOffices }) {
         },
     ];
 
-    useEffect(() => {
-        const newPublicOffices = offices.filter(office => office.public_flag === "1");
-        setPublicOffices(newPublicOffices);
-    }, [offices]);
+    // useEffect(() => {
+    //     const newPublicOffices = offices.filter(office => office.public_flag === "1");
+    //     setPublicOffices(prevOffices => [...prevOffices, newPublicOffices]);
+    // }, [offices]);
+    console.log(publicOffices);
+
 
     // オフィスを探すモーダルに渡すカラム名
     const searchOfficeTableCols = ['オフィス名', 'オフィス概要', '参加人数'];
@@ -165,11 +171,7 @@ export default function Dashboard({ auth, initialOffices }) {
             value: officeData.office_url,
         }
     }));
-
-
-
-    console.log(publicOffices);
-
+    console.log(`searchOfficeTableDatas:${searchOfficeTableDatas}`);
 
 
     return (
@@ -177,9 +179,14 @@ export default function Dashboard({ auth, initialOffices }) {
             <AuthenticatedLayout
                 user={auth.user}
                 header={
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                        ダッシュボード
-                    </h2>
+                    <>
+                        <Flex>
+                            <h3>{userInfo.display_name}</h3>
+                            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                                ダッシュボード
+                            </h2>
+                        </Flex>
+                    </>
                 }
             >
                 <Head title="Dashboard" />

@@ -24,9 +24,13 @@ class DashboardController extends Controller
     public function index()
     {
         $offices = $this->user->offices()->get();
-        // dd($offices);
+        $initialPublicOffices = Office::where('public_flag', 1)->get();
+        $userInfo = $this->user;
+        // dd($this->user);
         return inertia::render('Dashboard', [
             'initialOffices' => $offices,
+            'userInfo'=> $userInfo,
+            'initialPublicOffices' => $initialPublicOffices,
         ]);
     }
 
