@@ -18,9 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // エイリアスを追加
-        $middleware->alias([
-            'CheckOfficeMembership' => CheckOfficeMembership::class,
-        ]);
+        // $middleware->alias([
+        //     'CheckOfficeMembership' => CheckOfficeMembership::class,
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

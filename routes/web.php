@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
+use App\Http\Middleware\CheckOfficeMembership;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,7 +39,7 @@ Route::prefix('dashboard')->group(function () {
 Route::middleware(['auth'])
     ->prefix('/office')
     ->group(function() {
-        Route::middleware(['CheckOfficeMembership']) // CheckOfficeMembershipを限定適用
+        Route::middleware([CheckOfficeMembership::class])
             ->group(function() {
                 Route::get('/{office_id}', [OfficeController::class, 'show'])->name('office.show');
                 Route::get('/{office_id}/password', [OfficeController::class, 'password'])->name('office.password');
