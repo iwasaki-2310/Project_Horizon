@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckOfficeMembership;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,9 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\CheckOfficeMembership::class,
         ]);
 
-        //
+        // エイリアスを追加
+        $middleware->alias([
+            'CheckOfficeMembership' => CheckOfficeMembership::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

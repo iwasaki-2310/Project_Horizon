@@ -15,13 +15,18 @@ use Illuminate\Support\Facades\Log;
 class OfficeController extends Controller
 {
 
-    public function show($officeUrl)
+    public function show($officeId)
     {
-        $office = Office::where('office_url', $officeUrl)->firstOrFail();
+        $office = Office::where('id', $officeId)->firstOrFail();
 
         return Inertia::render('Office/OfficeTop', [
             'office' => $office,
         ]);
+    }
+
+    public function password($officeId)
+    {
+
     }
 
     public function store(Request $request) {}

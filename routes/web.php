@@ -35,9 +35,15 @@ Route::prefix('dashboard')->group(function () {
     Route::post('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::prefix('/office')->group(function () {
-    Route::get('/{officeUrl}', [OfficeController::class, 'show'])->name('office.show');
-});
+Route::middleware(['auth'])
+    ->prefix('/office')
+    ->group(function() {
+        Route::middleware(['CheckOfficeMembership']) // CheckOfficeMembershipを限定適用
+            ->group(function() {
+                Route::get('/{office_id}', [OfficeController::class, 'show'])->name('office.show');
+                Route::get('/{office_id}/password', [OfficeController::class, 'password'])->name('office.password');
+            });
+    });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

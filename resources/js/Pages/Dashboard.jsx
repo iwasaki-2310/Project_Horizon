@@ -234,14 +234,12 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                                             <ListItem
                                                 key={office.id}
                                                 py={3}
-                                                pr={4}
-                                                borderBottom="1px solid white"
-                                                _last={{ borderBottom: 'none' }}
+                                                pr={6}
                                             >
                                                 <Flex justifyContent="space-between">
                                                     <Text fontWeight="bold" color="white">{office?.office_name}</Text>
                                                     <Flex alignItems="center">
-                                                        <Link href={`/office/${office.office_url}`}>
+                                                        <Link href={`/office/${office.id}`}>
                                                             <Image src={`${iconsPath}/enter_white.svg`} w="25px" cursor="pointer" />
                                                         </Link>
                                                         <LinkIcon ml={4} color="white" />
