@@ -139,13 +139,6 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
         },
     ];
 
-    // useEffect(() => {
-    //     const newPublicOffices = offices.filter(office => office.public_flag === "1");
-    //     setPublicOffices(prevOffices => [...prevOffices, newPublicOffices]);
-    // }, [offices]);
-    console.log(publicOffices);
-
-
     // オフィスを探すモーダルに渡すカラム名
     const searchOfficeTableCols = ['オフィス名', 'オフィス概要', '参加人数'];
     // オフィスを探すモーダルに渡すテーブルの値
@@ -166,9 +159,9 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
             isAddColumn: true,
             value: officeData.member_count,
         },
-        url: {
+        office_id: {
             isAddColumn: false,
-            value: officeData.office_url,
+            value: officeData.id,
         }
     }));
     console.log(`searchOfficeTableDatas:${searchOfficeTableDatas}`);
@@ -239,7 +232,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                                                 <Flex justifyContent="space-between">
                                                     <Text fontWeight="bold" color="white">{office?.office_name}</Text>
                                                     <Flex alignItems="center">
-                                                        <Link href={`/office/${office.id}`}>
+                                                        <Link href={`/office/${office.id}/top`}>
                                                             <Image src={`${iconsPath}/enter_white.svg`} w="25px" cursor="pointer" />
                                                         </Link>
                                                         <LinkIcon ml={4} color="white" />

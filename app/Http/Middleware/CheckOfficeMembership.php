@@ -20,6 +20,10 @@ class CheckOfficeMembership
         $officeId = $request->route('office_id');
         $userId = auth()->id();
 
+        if($request->route()->getName() === 'office.password' || $request->route()->getName() === 'office.joinOffice') {
+            return $next($request);
+        }
+
         // ログインしていない場合は、ログイン画面に遷移させる
         if(!$userId) {
             return redirect()->route('login');

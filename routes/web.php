@@ -41,8 +41,9 @@ Route::middleware(['auth'])
     ->group(function() {
         Route::middleware([CheckOfficeMembership::class])
             ->group(function() {
-                Route::get('/{office_id}', [OfficeController::class, 'show'])->name('office.show');
-                Route::get('/{office_id}/password', [OfficeController::class, 'password'])->name('office.password');
+                Route::get('/{office_id}/top', [OfficeController::class, 'show'])->name('office.show');
+                Route::get('/{office_id}/password', [OfficeController::class, 'showInputPassword'])->name('office.password');
+                Route::post('/{office_id}/join', [OfficeController::class, 'joinOffice'])->name('office.joinOffice');
             });
     });
 
