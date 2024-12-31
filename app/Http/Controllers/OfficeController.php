@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Log;
 class OfficeController extends Controller
 {
 
+    protected $user;
+
+    public function __construct(Request $request)
+    {
+        $this->user = $request->user();
+    }
+
     public function show(Request $request)
     {
         $officeId = $request->route('office_id');
@@ -37,11 +44,12 @@ class OfficeController extends Controller
 
     public function joinOffice(Request $request)
     {
+
         $requestedOfficePassword = $request->office_password;
         $requestedOfficeId = $request->route('office_id');
+        $office = Office::where('id', $requestedOfficeId)->first();
 
         try {
-            $office = Office::where('id', $requestedOfficeId)->first();
 
             // パスワード誤り
             if($office->office_password !== $requestedOfficePassword) {
@@ -49,14 +57,19 @@ class OfficeController extends Controller
             }
 
             // パスワード成功
-            // OfficeUser::insert
+            OfficeUser::insert([
+                'office_id' => $requestedOfficeId,
+                'user_id' => $this->user->id,
+            ]);
+
+            // セッションにオフィスIDを保存
             $request->session()->put('office_id', $requestedOfficeId);
+
             return response()->json(['message' => 'パスワードが正しいです。'], 200);
 
-
         } catch (Exception $e) {
-            return response()->json(['message' => 'エラーが発生しました。'], 500);
             dd($e);
+            return response()->json(['message' => Log::error($e->getMessage())], 500);
         }
 
     }
