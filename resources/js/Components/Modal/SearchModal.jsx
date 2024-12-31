@@ -34,8 +34,6 @@ const SearchModal = props => {
     const { isOpen, onClose, modalTitle, tableColumns, tableData, iconPath } = props;
     const iconsPath = '/icons';
 
-    console.log(tableData);
-
     return (
         <ChakraModal
             isOpen={isOpen}

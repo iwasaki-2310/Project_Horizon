@@ -1,4 +1,5 @@
-import FormModal from '@/Components/Modal/FormModal';
+import FormModal from '@/Components/Modal/CreateOfficeModal';
+import JoinOfficeModal from '@/Components/Modal/JoinOfficeModal';
 import Layouts from '@/Layouts/Layouts';
 import {
     Box,
@@ -27,9 +28,7 @@ const Password = ({ officeId }) => {
             const response = await axios.post( route('office.joinOffice', { office_id: officeId }),{
                 office_password: data.office_password,
             } );
-            console.log(response);
             if(response.status === 200) {
-                console.log('オフィスに遷移');
                 window.location.href = route('office.show', { office_id: officeId });
             }
         } catch (error) {
@@ -42,7 +41,7 @@ const Password = ({ officeId }) => {
 
     return (
         <Box w='100vw' h="100vh" bg='#0f172a'>
-            <FormModal
+            <JoinOfficeModal
                 isOpen={true}
                 onClose={() => {}} closeOnOverlayClick={false} closeOnEsc={false}
                 modalTitle={'オフィスのパスワードを入力'}

@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { PrimaryButton } from '../PrimaryButton';
 import { CancelButton } from '../CancelButton';
 
-const FormModal = props => {
+const JoinOfficeModal = props => {
     const { isOpen, onClose, modalTitle, fields, onSubmit, errors } = props;
 
     const { data, setData, post, processing } = useForm(
@@ -32,13 +32,13 @@ const FormModal = props => {
     );
 
     const handleChange = e => {
-        console.log(`Field: ${e.target.name}, Value: ${e.target.value}`);
         setData(e.target.name, e.target.value);
     };
 
     // フォーム送信
     const handleSubmit = () => {
         onSubmit(data);
+        // if(data)
     };
 
     return (
@@ -93,4 +93,4 @@ const FormModal = props => {
     );
 };
 
-export default FormModal;
+export default JoinOfficeModal;

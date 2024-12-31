@@ -44,9 +44,9 @@ class DashboardController extends Controller
                     'office_name' => 'required|string|max:30',
                     'office_url' => 'required|string|regex:/^[A-Za-z0-9\-]+$/|max:30',
                     'office_description' => 'required|string|max:100',
-                    'office_password' => 'required|string|max:20',
+                    'office_password' => 'max:20',
                 ], [
-                    'office_name.required' => 'オフィスURLは必須です。',
+                    'office_name.required' => 'オフィス名は必須です。',
                     'office_name.max' => 'オフィス名は30文字以内である必要があります。',
                     'office_url.required' => 'オフィスURLは必須です。',
                     'office_url.string' => 'オフィスURLは文字列である必要があります。',

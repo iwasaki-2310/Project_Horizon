@@ -1,4 +1,4 @@
-import Modal from '@/Components/Modal/FormModal';
+import Modal from '@/Components/Modal/CreateOfficeModal';
 import ModalInput from '@/Components/Modal/ModalInput';
 import ModalInputLabel from '@/Components/Modal/ModalInputLabel';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -24,8 +24,6 @@ import {
 } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import UserModal from '@/Components/Modal/FormModal';
-import FormModal from '@/Components/Modal/FormModal';
 import { PrimaryButton } from '@/Components/PrimaryButton';
 import axios from 'axios';
 import { BellIcon, InfoIcon, InfoOutlineIcon, LinkIcon } from '@chakra-ui/icons';
@@ -40,6 +38,7 @@ import SecondaryButton from '@/Components/SecondaryButton';
 import SearchModal from '@/Components/Modal/SearchModal';
 import ContentSubtlte from '@/Components/DashBoard/ContentSubtlte';
 import ContentBody from '@/Components/DashBoard/ContentBody';
+import CreateOfficeModal from '@/Components/Modal/CreateOfficeModal';
 
 export default function Dashboard({ auth, initialOffices, initialPublicOffices, userInfo }) {
     const iconsPath = '/icons';
@@ -84,7 +83,6 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
             if(newOffice.public_flag === '1') {
                 setPublicOffices(prevOffices => [...prevOffices, newOffice]);
             }
-            console.log(newOffice);
             closeModal();
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -164,7 +162,6 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
             value: officeData.id,
         }
     }));
-    console.log(`searchOfficeTableDatas:${searchOfficeTableDatas}`);
 
 
     return (
@@ -210,7 +207,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                             iconPath={`${iconsPath}/enter_black.svg`}
                         />
                         {/* オフィス新規作成モーダル */}
-                        <FormModal
+                        <CreateOfficeModal
                             isOpen={isModalOpen}
                             onClose={closeModal}
                             modalTitle={'オフィスの新規作成'}
