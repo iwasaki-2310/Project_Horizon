@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Office;
 use App\Models\OfficeUser;
 use Closure;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class CheckOfficeMembership
     public function handle(Request $request, Closure $next): Response
     {
         $officeId = $request->route('office_id');
+        $officeInfo = Office::where('id', $officeId)->first();
         $userId = auth()->id();
 
         if($request->route()->getName() === 'office.password' || $request->route()->getName() === 'office.joinOffice') {
@@ -34,9 +36,8 @@ class CheckOfficeMembership
             ->where('user_id', $userId)
             ->exists();
 
-
         // 未参加の場合はオフィス入室用パスワード画面に遷移させる
-        if(!$isMemberShip) {
+        if(!$isMemberShip && !is_null($officeInfo->office_password)) {
             return redirect()->route('office.password', ['office_id' => $officeId]);
         }
 
