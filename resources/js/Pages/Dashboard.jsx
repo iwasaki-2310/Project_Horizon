@@ -220,6 +220,16 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                             <ScrollArea>
                                 <UnorderedList>
                                     {offices.map(office => {
+                                        const handleLinkCopy = () => {
+                                            const url = `${window.location.origin}/office/${office.id}/top`;
+                                            navigator.clipboard.writeText(url)
+                                            .then(() => {
+                                                alert('オフィスのリンクがコピーされました！');
+                                            })
+                                            .catch((error) => {
+                                                console.error('コピーに失敗しました', error);
+                                            })
+                                        }
                                         return (
                                             <ListItem
                                                 key={office.id}
@@ -232,7 +242,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                                                         <Link href={`/office/${office.id}/top`}>
                                                             <Image src={`${iconsPath}/enter_white.svg`} w="25px" cursor="pointer" />
                                                         </Link>
-                                                        <LinkIcon ml={4} color="white" />
+                                                        <LinkIcon onClick={handleLinkCopy} cursor="pointer" ml={4} color="white" />
                                                         <InfoOutlineIcon
                                                             color="white"
                                                             cursor="pointer"
