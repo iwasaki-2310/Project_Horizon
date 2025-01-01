@@ -1,4 +1,5 @@
 import Layouts from '@/Layouts/Layouts';
+import OfficeLayout from '@/Layouts/OfficeLayout';
 import {
     Heading,
     Image,
@@ -11,10 +12,9 @@ import {
 const OfficeTop = ({ office }) => {
     console.log(office);
     return (
-        <>
-            <Heading as="h1">{office.office_name}</Heading>
-            <Text>こんにちは！</Text>
-        </>
+        <OfficeLayout officeName={office.office_name}>
+            <Text as="h2">ようこそ！</Text>
+        </OfficeLayout>
     );
 };
 

@@ -69,7 +69,7 @@ const SearchModal = props => {
                                             ) : null
                                         ))}
                                         {data['office_id'] && (
-                                            <Td>
+                                            <Td p={0}>
                                                 <Link href={`/office/${data['office_id']['value']}/top`}>
                                                     <Image src={iconPath} w="25px" cursor="pointer" />
                                                 </Link>
