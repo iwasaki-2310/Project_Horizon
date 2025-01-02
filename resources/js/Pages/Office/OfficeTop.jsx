@@ -1,4 +1,5 @@
 import ChairGroup from '@/Components/Office/ChairGroup';
+import ChairV01 from '@/Components/Office/ChairV01';
 import Pod from '@/Components/Office/Pod';
 import Layouts from '@/Layouts/Layouts';
 import OfficeLayout from '@/Layouts/OfficeLayout';
@@ -35,67 +36,67 @@ const OfficeTop = ({ office }) => {
                 <Flex flexWrap="wrap" justifyContent="space-between" px={5}>
                     <Pod>
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                         <Image src={`${officeImagePath}/table.svg`} py={1} />
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                         <Image src={`${officeImagePath}/table.svg`} py={1} />
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                         <Image src={`${officeImagePath}/table.svg`} py={1} />
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                         <Image src={`${officeImagePath}/table.svg`} py={1} />
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                         <Image src={`${officeImagePath}/table.svg`} py={1} />
                         <ChairGroup>
-                            <Image src={`${officeImagePath}/chair.svg`} w="50px" />
-                            <Image src={`${officeImagePath}/chair.svg`} />
-                            <Image src={`${officeImagePath}/chair.svg`} />
+                            <ChairV01 />
+                            <ChairV01 />
+                            <ChairV01 />
                         </ChairGroup>
                     </Pod>
                 </Flex>

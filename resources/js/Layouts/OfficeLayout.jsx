@@ -25,7 +25,7 @@ const OfficeLayout = ({ children, officeName }) => {
             <ChatIcon display="block" color="white" w="28px" cursor="pointer" />
         </Flex>
       </Flex>
-      <Box as="main" h="calc(100vh - 60px)" bgImage={`url(${officeImagePath}/flooring.svg)`}>{children}</Box>
+      <Box as="main" h="calc(100vh - 60px)" bgImage={`url(${officeImagePath}/flooring_2.png)`} bgSize="cover" bgRepeat="repeat">{children}</Box>
     </Box>
   );
 };

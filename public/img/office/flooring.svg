@@ -16,27 +16,27 @@
       height="80"
     >
       <!-- 背景色を少し明るめにした長方形 -->
-      <rect width="80" height="80" fill="#faf6f0" />
+      <rect width="80" height="80" fill="#ffe2b3" />
 
       <!-- 木目の線を薄く＆透明度を上げる -->
       <path
         d="M10,20 Q 20,15 30,20 Q 40,25 50,20 Q 60,15 70,20"
         fill="none"
-        stroke="#ccc"
+        stroke="#474747"
         stroke-opacity="0.15"
         stroke-width="0.5"
       />
       <path
         d="M10,40 Q 20,35 30,40 Q 40,45 50,40 Q 60,35 70,40"
         fill="none"
-        stroke="#ccc"
+        stroke="#474747"
         stroke-opacity="0.15"
         stroke-width="0.5"
       />
       <path
         d="M10,60 Q 20,55 30,60 Q 40,65 50,60 Q 60,55 70,60"
         fill="none"
-        stroke="#ccc"
+        stroke="#474747"
         stroke-opacity="0.15"
         stroke-width="0.5"
       />
