@@ -1,0 +1,69 @@
+<svg
+  width="300"
+  height="200"
+  viewBox="0 0 300 200"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <!--
+      パターン定義 (机の木目を薄く表現するためのもの)
+      - patternUnits="userSpaceOnUse" でSVGの座標系(300x200)に合わせてパターンを敷き詰める
+      - 小さめのパターン(40x40)を繰り返し
+    -->
+    <pattern
+      id="deskPattern"
+      patternUnits="userSpaceOnUse"
+      width="40"
+      height="40"
+    >
+      <!-- 背景色 (薄めのベージュ～ブラウン) -->
+      <rect width="40" height="40" fill="#d2b48c" />
+      <!-- ごく薄い木目の線 (2～3本程度) -->
+      <path
+        d="M5,10 Q 10,5 15,10 Q 20,15 25,10 Q 30,5 35,10"
+        fill="none"
+        stroke="#8f775a"
+        stroke-opacity="0.15"
+        stroke-width="0.5"
+      />
+      <path
+        d="M5,25 Q 10,20 15,25 Q 20,30 25,25 Q 30,20 35,25"
+        fill="none"
+        stroke="#8f775a"
+        stroke-opacity="0.15"
+        stroke-width="0.5"
+      />
+    </pattern>
+  </defs>
+
+  <!--
+    机本体 (天板)
+    - 位置: x=0, y=0
+    - サイズ: SVG全体に広げる
+  -->
+  <rect
+    x="0"
+    y="0"
+    width="300"
+    height="200"
+    rx="20"
+    ry="20"
+    fill="url(#deskPattern)"
+  />
+
+  <!--
+    オプション: 机の縁を少し濃い色で縁取り (stroke)
+  -->
+  <rect
+    x="0"
+    y="0"
+    width="300"
+    height="200"
+    rx="20"
+    ry="20"
+    fill="none"
+    stroke="#8f775a"
+    stroke-width="2"
+    stroke-opacity="0.3"
+  />
+</svg>

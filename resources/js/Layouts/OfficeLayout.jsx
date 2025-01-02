@@ -14,7 +14,7 @@ const OfficeLayout = ({ children, officeName }) => {
         };
     }, []);
   return (
-    <>
+    <Box>
       <Flex as="header" className='bg-slate-900' alignItems="center" justifyContent="space-between" h="60px" px={3}>
         <Flex alignItems="center" justifyContent="space-between">
             <Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" />
@@ -26,7 +26,7 @@ const OfficeLayout = ({ children, officeName }) => {
         </Flex>
       </Flex>
       <Box as="main" h="calc(100vh - 60px)" bgImage={`url(${officeImagePath}/flooring.svg)`}>{children}</Box>
-    </>
+    </Box>
   );
 };
 

@@ -5,3 +5,7 @@
 .ml-15 {
     margin-left: 15px;
 }
+
+.overflow-hidden {
+    overflow: hidden;
+}
