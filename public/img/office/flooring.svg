@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  viewBox="0 0 400 400"
+  preserveAspectRatio="none"
+  xmlns="http://www.w3.org/2000/svg"
+  width="400"
+  height="400"
+>
+  <defs>
+    <pattern
+      id="lightFloor"
+      patternUnits="userSpaceOnUse"
+      x="0"
+      y="0"
+      width="80"
+      height="80"
+    >
+      <!-- 背景色を少し明るめにした長方形 -->
+      <rect width="80" height="80" fill="#faf6f0" />
+
+      <!-- 木目の線を薄く＆透明度を上げる -->
+      <path
+        d="M10,20 Q 20,15 30,20 Q 40,25 50,20 Q 60,15 70,20"
+        fill="none"
+        stroke="#ccc"
+        stroke-opacity="0.15"
+        stroke-width="0.5"
+      />
+      <path
+        d="M10,40 Q 20,35 30,40 Q 40,45 50,40 Q 60,35 70,40"
+        fill="none"
+        stroke="#ccc"
+        stroke-opacity="0.15"
+        stroke-width="0.5"
+      />
+      <path
+        d="M10,60 Q 20,55 30,60 Q 40,65 50,60 Q 60,55 70,60"
+        fill="none"
+        stroke="#ccc"
+        stroke-opacity="0.15"
+        stroke-width="0.5"
+      />
+
+      <!-- 板の境界線もかなり薄く -->
+      <line
+        x1="0"
+        y1="0"
+        x2="80"
+        y2="0"
+        stroke="#dcd2c6"
+        stroke-width="1"
+        stroke-opacity="0.15"
+      />
+      <line
+        x1="0"
+        y1="80"
+        x2="80"
+        y2="80"
+        stroke="#dcd2c6"
+        stroke-width="1"
+        stroke-opacity="0.15"
+      />
+    </pattern>
+  </defs>
+
+  <!-- フローリングパターンで塗りつぶし -->
+  <rect
+    x="0"
+    y="0"
+    width="400"
+    height="400"
+    fill="url(#lightFloor)"
+  />
+</svg>

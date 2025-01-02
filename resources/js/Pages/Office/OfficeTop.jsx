@@ -11,9 +11,10 @@ import {
 
 const OfficeTop = ({ office }) => {
     console.log(office);
+    const officeImagePath = '/img/office';
     return (
         <OfficeLayout officeName={office.office_name}>
-            <Text as="h2">ようこそ！</Text>
+
         </OfficeLayout>
     );
 };
