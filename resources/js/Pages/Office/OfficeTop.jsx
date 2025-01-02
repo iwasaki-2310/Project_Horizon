@@ -1,6 +1,7 @@
 import ChairGroup from '@/Components/Office/ChairGroup';
 import ChairV01 from '@/Components/Office/ChairV01';
 import Pod from '@/Components/Office/Pod';
+import TableV01 from '@/Components/Office/TableV01';
 import Layouts from '@/Layouts/Layouts';
 import OfficeLayout from '@/Layouts/OfficeLayout';
 import {
@@ -40,7 +41,7 @@ const OfficeTop = ({ office }) => {
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
-                        <Image src={`${officeImagePath}/table.svg`} py={1} />
+                        <TableV01 />
                         <ChairGroup>
                             <ChairV01 />
                             <ChairV01 />
@@ -53,7 +54,7 @@ const OfficeTop = ({ office }) => {
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
-                        <Image src={`${officeImagePath}/table.svg`} py={1} />
+                        <TableV01 />
                         <ChairGroup>
                             <ChairV01 />
                             <ChairV01 />
@@ -66,7 +67,7 @@ const OfficeTop = ({ office }) => {
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
-                        <Image src={`${officeImagePath}/table.svg`} py={1} />
+                        <TableV01 />
                         <ChairGroup>
                             <ChairV01 />
                             <ChairV01 />
@@ -79,7 +80,7 @@ const OfficeTop = ({ office }) => {
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
-                        <Image src={`${officeImagePath}/table.svg`} py={1} />
+                        <TableV01 />
                         <ChairGroup>
                             <ChairV01 />
                             <ChairV01 />
@@ -92,7 +93,7 @@ const OfficeTop = ({ office }) => {
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
-                        <Image src={`${officeImagePath}/table.svg`} py={1} />
+                        <TableV01 />
                         <ChairGroup>
                             <ChairV01 />
                             <ChairV01 />

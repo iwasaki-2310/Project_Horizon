@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Office;
+use App\Models\Seat;
 use App\Models\User;
+use Carbon\Carbon;
 use CreateOfficeUserTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Contracts\Support\ValidatedData;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
@@ -38,6 +41,8 @@ class DashboardController extends Controller
         try {
 
             $user = $request->user();
+
+
 
             $office = DB::transaction(function () use ($request, $user) {
                 $validateData = $request->validate([
@@ -69,6 +74,20 @@ class DashboardController extends Controller
                 $office->users()->syncWithoutDetaching([
                     $user->id => ['entered_at' => now()],
                 ]);
+
+
+
+                for($i=1; $i<49; $i++) {
+                    $defaultSeats[$i] = [
+                        'office_id' => $office->id,
+                        'seat_id' => $i,
+                        'user_id' => Null,
+                        'is_availalble' => true,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ];
+                }
+                Seat::insert($defaultSeats);
 
                 Log::info("オフィス作成完了,追加されたオフィスID: {$office->id}");
 
