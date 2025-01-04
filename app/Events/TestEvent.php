@@ -12,14 +12,14 @@ class TestEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message; // ←ここを追加
+    public $message;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(string $message)
     {
-        $this->message = 'Hello world!'; // ←ここを追加
+        $this->message = $message;
     }
 
     // 中略
@@ -27,7 +27,7 @@ class TestEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('channel-name'), // ←Channelに変更
+            new Channel('channel-name'),
         ];
     }
 }
