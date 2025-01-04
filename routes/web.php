@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\TestEvent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OfficeController;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    TestEvent::dispatch('Hello, Reverb!');
     return Inertia::render('Welcome', [
         'greeting' => 'Hello',
         'canLogin' => Route::has('login'),

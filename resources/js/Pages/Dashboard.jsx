@@ -170,11 +170,20 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                 user={auth.user}
                 header={
                     <>
-                        <Flex>
-                            <h3>{userInfo.display_name}</h3>
-                            <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        <Flex alignItems="center">
+                            <Flex alignItems="center">
+                                <Image
+                                    w="50px"
+                                    h="50px"
+                                    rounded="full"
+                                    src={userInfo.avatar_file_path}
+                                    alt="アバター"
+                                />
+                                <Text ml={3}>{userInfo.display_name}</Text>
+                            </Flex>
+                            <Text as="h2" ml={5} className="font-semibold text-xl text-gray-800 leading-tight">
                                 ダッシュボード
-                            </h2>
+                            </Text>
                         </Flex>
                     </>
                 }

@@ -37,7 +37,7 @@ const OfficeTop = ({ office }) => {
                 <Flex flexWrap="wrap" justifyContent="space-between" px={5}>
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 />
+                            <ChairV01 seatId={1} />
                             <ChairV01 />
                             <ChairV01 />
                         </ChairGroup>
