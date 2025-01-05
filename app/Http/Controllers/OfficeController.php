@@ -76,6 +76,43 @@ class OfficeController extends Controller
 
     }
 
+    /**
+     * 座席情報取得
+     */
+    public function getSeatsStatus(Request $request)
+    {
+        $officeId = $request->route('office_id');
+        try {
+            $seatsInfo = Seat::where('office_id', $officeId)->get();
+
+            return response()->json(['seats' => $seatsInfo], 200);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return back()->withErrors(['error' => '座席情報の取得に失敗しました。']);
+        }
+    }
+
+    /**
+     * 特定の座席情報取得
+     */
+    public function getSelectedSeatStatus(Request $request)
+    {
+        $officeId = $request->route('office_id');
+        $seatId = $request->route('seat_id');
+        try {
+            $seledtedSeatInfo = Seat::where('office_id', $officeId)
+            ->where('seat_id', $seatId)
+            ->get();
+
+            return response()->json($seledtedSeatInfo, 200);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return back()->withErrors(['error' => '座席情報の取得に失敗しました。']);
+        }
+    }
+
     public function seatOccupy(Request $request)
     {
 

@@ -46,6 +46,8 @@ Route::middleware(['auth'])
                 Route::get('/{office_id}/top', [OfficeController::class, 'show'])->name('office.show');
                 Route::get('/{office_id}/password', [OfficeController::class, 'showInputPassword'])->name('office.password');
                 Route::post('/{office_id}/join', [OfficeController::class, 'joinOffice'])->name('office.joinOffice');
+                Route::get('/{office_id}/seats-status', [OfficeController::class, 'getSeatsStatus'])->name('office.getSeatsStatus');
+                Route::get('/{office_id}/{seat_id}/seats-status', [OfficeController::class, 'getSelectedSeatStatus'])->name('office.getSelectedSeatStatus');
             });
     });
 

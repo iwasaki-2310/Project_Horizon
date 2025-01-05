@@ -15,9 +15,15 @@ import {
     UnorderedList,
 } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const OfficeTop = ({ office }) => {
+
+    const officeImagePath = '/img/office';
+    const [seatStatus ,setSeatStatus] = useState({});
+
+    console.log(office);
 
     // このページのみBodyタグにoverfro-hiddenを付与
     useEffect(() => {
@@ -27,7 +33,20 @@ const OfficeTop = ({ office }) => {
             document.body.classList.remove('overflow-hidden');
         }
     }, [])
-    const officeImagePath = '/img/office';
+
+    useEffect(() => {
+        const fetchSeats = async() => {
+            try {
+                const response = await axios.get(route('office.getSeatsStatus', {office_id: office.id}));
+                // console.log(response.data.seats[0].is_availalble);
+                // setSeatStatus(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchSeats();
+    }, []);
+
     return (
         <>
             <Head>
@@ -37,28 +56,28 @@ const OfficeTop = ({ office }) => {
                 <Flex flexWrap="wrap" justifyContent="space-between" px={5}>
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 seatId={1} />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01 officeId={office.id} seatId={1} />
+                            <ChairV01 officeId={office.id} seatId={2} />
+                            <ChairV01 officeId={office.id} seatId={3} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01 officeId={office.id} seatId={4} />
+                            <ChairV01 officeId={office.id} seatId={5} />
+                            <ChairV01 officeId={office.id} seatId={6} />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01 officeId={office.id} seatId={7} />
+                            <ChairV01 officeId={office.id} seatId={8} />
+                            <ChairV01 officeId={office.id} seatId={9} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01 officeId={office.id} seatId={10} />
+                            <ChairV01 officeId={office.id} seatId={11} />
+                            <ChairV01 officeId={office.id} seatId={12} />
                         </ChairGroup>
                     </Pod>
                     <Pod>
