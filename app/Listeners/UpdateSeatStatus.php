@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\SeatOccupied;
 use App\Models\Seat;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -26,7 +27,7 @@ class UpdateSeatStatus
         Seat::where('seat_id', $event->seatId)
         ->where('office_id', $event->officeId)
         ->update([
-            'is_occupied' => true,
+            'is_availalble' => false,
             'user_id' => $event->userId,
         ]);
     }

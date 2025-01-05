@@ -8,7 +8,7 @@ const ChairV01 = ({officeId, seatId}) => {
 
         const handleSeatStatus = async(officeId, seatId) => {
             try {
-                const response = await axios.post(route('office.sitSeat', {office_id: officeId, seat_id: seatId }))
+                const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }))
                 console.log('ユーザーを着席させました。');
                 console.log(response.data.userInfo.avatar_file_path);
                 const userAvatar = response.data.userInfo.avatar_file_path;

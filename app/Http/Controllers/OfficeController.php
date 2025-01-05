@@ -117,45 +117,57 @@ class OfficeController extends Controller
     /**
      * 着席処理
      */
-    public function sitSeat(Request $request)
-    {
-        $officeId = $request->route('office_id');
-        $seatId = $request->route('seat_id');
+    // public function sitSeat(Request $request)
+    // {
+    //     $officeId = $request->route('office_id');
+    //     $seatId = $request->route('seat_id');
 
-        try {
-            // 着席処理
-            Seat::where('office_id', $officeId)
-            ->where('seat_id', $seatId)
-            ->update([
-                'is_availalble' => false,
-                'user_id' => $this->user->id,
-            ]);
+    //     try {
+    //         // 着席処理
+    //         Seat::where('office_id', $officeId)
+    //         ->where('seat_id', $seatId)
+    //         ->update([
+    //             'is_availalble' => false,
+    //             'user_id' => $this->user->id,
+    //         ]);
 
-            // アバター取得
-            $userInfo = User::where('id', $this->user->id)->first();
+    //         // アバター取得
+    //         $userInfo = User::where('id', $this->user->id)->first();
 
-            return response()->json(['seatId' => $seatId, 'userInfo' => $userInfo], 200);
+    //         return response()->json(['seatId' => $seatId, 'userInfo' => $userInfo], 200);
 
-        } catch(Exception $e) {
-            Log::error($e->getMessage());
-            return back()->withErrors(['error' => '着席の処理に失敗しました。']);
-        }
-    }
+    //     } catch(Exception $e) {
+    //         Log::error($e->getMessage());
+    //         return back()->withErrors(['error' => '着席の処理に失敗しました。']);
+    //     }
+    // }
 
     public function seatOccupy(Request $request)
     {
+        try {
 
-        $seatInfo = Seat::findOrFail($request->seatId);
+            $officeId = $request->route('office_id');
+            $seatId = $request->route('seat_id');
 
-        // 使用中フラグが立っている場合はエラーを返す
-        if($seatInfo->is_occupied) {
-            return response()->json(['error' => '既に他ユーザーが着席中です。'], 400);
+            $seatInfo = Seat::where('office_id', $officeId)->where('seat_id', $seatId)->first();
+
+            // 使用中フラグが立っている場合はエラーを返す
+            // if($seatInfo->is_availalble) {
+            //     return response()->json(['error' => '既に他ユーザーが着席中です。'], 400);
+            // }
+
+            // イベント発火
+            event(new SeatOccupied($officeId, $seatId, $request->user()->id));
+
+            $userInfo = User::where('id', $this->user->id)->first();
+
+            return response()->json(['success' => true, 'userInfo' => $userInfo]);
+
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => '座席の使用状況の更新に失敗しました。'], 500);
         }
 
-        // イベント発火
-        event(new SeatOccupied($request->office_id, $request->seatId, $request->user()->id));
-
-        return response()->json(['success' => true]);
     }
 
     public function store(Request $request) {}
