@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SeatOccupied;
 use App\Models\Office;
 use App\Models\OfficeUser;
+use App\Models\Seat;
 use App\Models\User;
 use CreateOfficeUserTable;
 use Illuminate\Support\Facades\DB;
@@ -72,6 +74,22 @@ class OfficeController extends Controller
             return response()->json(['message' => Log::error($e->getMessage())], 500);
         }
 
+    }
+
+    public function seatOccupy(Request $request)
+    {
+
+        $seatInfo = Seat::findOrFail($request->seatId);
+
+        // 使用中フラグが立っている場合はエラーを返す
+        if($seatInfo->is_occupied) {
+            return response()->json(['error' => '既に他ユーザーが着席中です。'], 400);
+        }
+
+        // イベント発火
+        event(new SeatOccupied($request->office_id, $request->seatId, $request->user()->id));
+
+        return response()->json(['success' => true]);
     }
 
     public function store(Request $request) {}
