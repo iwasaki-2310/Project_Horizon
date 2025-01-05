@@ -14,6 +14,7 @@ use Illuminate\Contracts\Support\ValidatedData;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Stmt\TryCatch;
 
 class OfficeController extends Controller
 {
@@ -110,6 +111,34 @@ class OfficeController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return back()->withErrors(['error' => '座席情報の取得に失敗しました。']);
+        }
+    }
+
+    /**
+     * 着席処理
+     */
+    public function sitSeat(Request $request)
+    {
+        $officeId = $request->route('office_id');
+        $seatId = $request->route('seat_id');
+
+        try {
+            // 着席処理
+            Seat::where('office_id', $officeId)
+            ->where('seat_id', $seatId)
+            ->update([
+                'is_availalble' => false,
+                'user_id' => $this->user->id,
+            ]);
+
+            // アバター取得
+            $userInfo = User::where('id', $this->user->id)->first();
+
+            return response()->json(['seatId' => $seatId, 'userInfo' => $userInfo], 200);
+
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return back()->withErrors(['error' => '着席の処理に失敗しました。']);
         }
     }
 
