@@ -82,28 +82,28 @@ const OfficeTop = ({ office }) => {
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01  officeId={office.id} seatId={13} />
+                            <ChairV01  officeId={office.id} seatId={14} />
+                            <ChairV01  officeId={office.id} seatId={15} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01  officeId={office.id} seatId={16} />
+                            <ChairV01  officeId={office.id} seatId={17} />
+                            <ChairV01  officeId={office.id} seatId={18} />
                         </ChairGroup>
                     </Pod>
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01  officeId={office.id} seatId={19} />
+                            <ChairV01  officeId={office.id} seatId={20} />
+                            <ChairV01  officeId={office.id} seatId={21} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 />
-                            <ChairV01 />
-                            <ChairV01 />
+                            <ChairV01  officeId={office.id} seatId={22} />
+                            <ChairV01  officeId={office.id} seatId={23} />
+                            <ChairV01  officeId={office.id} seatId={24} />
                         </ChairGroup>
                     </Pod>
                     <Pod>

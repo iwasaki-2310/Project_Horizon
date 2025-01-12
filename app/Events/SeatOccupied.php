@@ -10,22 +10,28 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SeatOccupied
+/**
+ * イベントクラス SeatOccupied
+ * オフィスの座席がユーザーによって占有されたことを通知するためのイベント
+ */
+class SeatOccupied implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $officeId;
     public $seatId;
     public $userId;
+    public $userAvatar;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $seatId, $userId)
+    public function __construct($officeId, $seatId, $userId, $userAvatar)
     {
         $this->officeId = $officeId;
         $this->seatId = $seatId;
         $this->userId = $userId;
+        $this->userAvatar = $userAvatar;
     }
 
     /**

@@ -144,10 +144,13 @@ class OfficeController extends Controller
 
     public function seatOccupy(Request $request)
     {
+        DB::beginTransaction();
         try {
 
             $officeId = $request->route('office_id');
             $seatId = $request->route('seat_id');
+            $userInfo = User::where('id', $this->user->id)->first();
+            $userAvatar = $userInfo->avatar_file_path;
 
             $seatInfo = Seat::where('office_id', $officeId)->where('seat_id', $seatId)->first();
 
@@ -157,13 +160,15 @@ class OfficeController extends Controller
             // }
 
             // イベント発火
-            event(new SeatOccupied($officeId, $seatId, $request->user()->id));
+            event(new SeatOccupied($officeId, $seatId, $request->user()->id, $userAvatar));
 
-            $userInfo = User::where('id', $this->user->id)->first();
+
+            DB::commit();
 
             return response()->json(['success' => true, 'userInfo' => $userInfo]);
 
         } catch(Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(['error' => '座席の使用状況の更新に失敗しました。'], 500);
         }
