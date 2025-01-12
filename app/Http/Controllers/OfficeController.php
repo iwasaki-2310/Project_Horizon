@@ -85,8 +85,9 @@ class OfficeController extends Controller
         $officeId = $request->route('office_id');
         try {
             $seatsInfo = Seat::where('office_id', $officeId)->get();
+            $usersInfo = User::get();
 
-            return response()->json(['seats' => $seatsInfo], 200);
+            return response()->json(['seats' => $seatsInfo, 'users' => $usersInfo], 200);
 
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -104,9 +105,16 @@ class OfficeController extends Controller
         try {
             $seledtedSeatInfo = Seat::where('office_id', $officeId)
             ->where('seat_id', $seatId)
-            ->get();
+            ->first();
 
-            return response()->json($seledtedSeatInfo, 200);
+            $userAvatar = Seat::leftJoin('users', 'seats.user_id', '=', 'users.id')
+                ->where('seats.office_id', $officeId)
+                ->where('seats.seat_id', $seatId)
+                ->select('users.avatar_file_path')
+                ->first();
+            
+
+            return response()->json(['seatInfo' => $seledtedSeatInfo, 'userAvatar' => $userAvatar]);
 
         } catch (Exception $e) {
             Log::error($e->getMessage());

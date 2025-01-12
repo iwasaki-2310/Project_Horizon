@@ -46,39 +46,21 @@ const ChairV01 = ({officeId, seatId}) => {
     /**
      * 座席情報の取得
      */
-    // const fetchSelectedSeatStatus = async() => {
-    //     try {
-    //         const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId }));
-    //         const seatStatus = response.data[0].is_availalble;
-
-    //         console.log(seatStatus);
-
-    //         if(seatStatus === '1') {
-    //             handleSeatStatus(officeId, seatId);
-    //             alert('この座席は座れます。');
-    //         };
-    //         if(seatStatus === '0') {
-    //             alert('既に他のユーザーが使用中です。');
-    //         };
-
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
     useEffect(() => {
         const fetcheSeatStatus = async(officeId) => {
-            const response = await axios.get(route('office.getSeatsStatus', {office_id: officeId}));
-            // setSeatStatus()
-            // console.log(response.data.seats);
-            const allSeatsInfo = response.data.seats;
-            const thisSeat = allSeatsInfo.find(seat => seat.seat_id ==  seatId);
-            // console.log(thisSeat.is_availalble);
-            setSeatStatus({isAvailable:thisSeat.is_availalble ,userId: thisSeat.user_id,})
+            const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
+            const SeatInfo = response.data.seatInfo;
+            const sittingUserAvatar = response.data.userAvatar.avatar_file_path;
+            console.log(SeatInfo);
+            console.log(sittingUserAvatar);
+            // const allUsersInfo = response.data.users;
+            // console.log(allUsersInfo);
+
+            setSeatStatus({isAvailable:SeatInfo.is_availalble ,userId: SeatInfo.user_id, userAvatar: sittingUserAvatar})
         }
+
         fetcheSeatStatus(officeId, seatId)
     }, []);
-    console.log(seatStatus);
 
     useEffect(() => {
         const channel = window.Echo.private("office_seats");
@@ -119,7 +101,7 @@ const ChairV01 = ({officeId, seatId}) => {
                     <Image w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
                 ) :
                 (
-                    <p>✖</p>
+                    <Image w="40px" borderRadius="50%" src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)} />
                 )
             }
         </>
