@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
  * イベントクラス SeatOccupied
@@ -45,4 +46,17 @@ class SeatOccupied implements ShouldBroadcast
             new PrivateChannel('office_seats'),
         ];
     }
+
+    public function broadcastWith()
+    {
+        return [
+            'seatId' => $this->seatId,
+            'userId' => $this->userId,
+            'userAvatar' => $this->userAvatar,
+        ];
+        Log::info('SeatOccupied event triggered:', $this->broadcastWith());
+    }
+
+
+
 }

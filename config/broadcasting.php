@@ -39,6 +39,7 @@ return [
                 'host' => env('REVERB_HOST'),
                 'port' => env('REVERB_PORT', 443),
                 'scheme' => env('REVERB_SCHEME', 'https'),
+                'cluster' => env('REVERB_CLUSTER'),
                 'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
             ],
             'client_options' => [

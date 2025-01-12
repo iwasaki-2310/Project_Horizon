@@ -8,6 +8,7 @@ import Echo from "laravel-echo";
 const ChairV01 = ({officeId, seatId}) => {
     const officeImagePath = '/img/office';
     const [userAvatar, setUserAvatar] = useState();
+    const [seatStatus, setSeatStatus] = useState({});
     const [isAvailable, setIsAvailable] = useState(true);
 
     /**
@@ -18,11 +19,11 @@ const ChairV01 = ({officeId, seatId}) => {
         broadcaster: "reverb",
         key: import.meta.env.VITE_REVERB_APP_KEY, // Laravelの設定に合わせて変更
         wsHost: import.meta.env.VITE_REVERB_HOST,    // ブラウザからアクセスする際のホスト名
-        wsPort: 6001,           // コンテナ側でEXPOSEしている WebSocketポート
-        wssPort: 6001,          // HTTPS/SSLを使わないローカルなら実質同じポートでOK
-        forceTLS: false,        // HTTPSを使用していない場合はfalse
+        wsPort: import.meta.env.VITE_REVERB_PORT,           // コンテナ側でEXPOSEしている WebSocketポート
+        wssPort: import.meta.env.VITE_REVERB_PORT,          // HTTPS/SSLを使わないローカルなら実質同じポートでOK
+        forceTLS: import.meta.env.VITE_REVERB_FORCE_TLS,        // HTTPSを使用していない場合はfalse
         disableStats: true,
-        cluster: "ap3",
+        cluster: import.meta.env.VITE_REVERB_CLUSTER,
         enabledTransports: 'ws'
     });
 
@@ -33,7 +34,7 @@ const ChairV01 = ({officeId, seatId}) => {
         try {
             const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }))
             console.log('ユーザーを着席させました。');
-            console.log(response.data.userInfo.avatar_file_path);
+            console.log(response);
             const userAvatar = response.data.userInfo.avatar_file_path;
             setUserAvatar(userAvatar);
 
@@ -66,26 +67,60 @@ const ChairV01 = ({officeId, seatId}) => {
     // };
 
     useEffect(() => {
-        const channel = echo.private("office_seats");
+        const fetcheSeatStatus = async(officeId) => {
+            const response = await axios.get(route('office.getSeatsStatus', {office_id: officeId}));
+            // setSeatStatus()
+            // console.log(response.data.seats);
+            const allSeatsInfo = response.data.seats;
+            const thisSeat = allSeatsInfo.find(seat => seat.seat_id ==  seatId);
+            // console.log(thisSeat.is_availalble);
+            setSeatStatus({isAvailable:thisSeat.is_availalble ,userId: thisSeat.user_id,})
+        }
+        fetcheSeatStatus(officeId, seatId)
+    }, []);
+    console.log(seatStatus);
 
-        channel.listen("SeatOccupied", (event) => {
-            if(event.seatId === seatId) {
-                setUserAvatar(event.userAvatar); //座席が占領された場合にアバターを更新
-                setIsAvailable(false);
-                console.log("座席情報の取得に成功");
-            }
+    useEffect(() => {
+        const channel = window.Echo.private("office_seats");
+        // console.log(channel);
+        
+        channel.listen("SeatOccupied", (data) => {
+            // console.log('リアルタイムデータ：', data);
+            
+            // 座席状態の更新
+            setSeatStatus((prevStatus) => {
+                const updatedStatus = {
+                    ...prevStatus,
+                    [data.seatId]: {
+                        isAvailable: false,
+                        userId: data.userId,
+                        userAvatar: data.userAvatar
+                    },
+                };
+                console.log("更新された状態:", updatedStatus);
+                return updatedStatus;
+            });
         });
 
-        // return() => {
-        //     channel.stopListening("SeatOccupied");
-        // }
-    }, []);
+        return () => {
+            console.log("useEffectのクリーンアップが実行されました");
+            channel.unsubscribe();
+        };
+    }, [window.Echo]);
+
+    useEffect(() => {
+        // console.log("シートが更新されました。", seatStatus);
+    }, [seatStatus])
 
     return(
         <>
             {
-                userAvatar ? <Image w="40px" src={userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)} /> :
-                <Image w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                seatStatus.isAvailable == true ? (
+                    <Image w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                ) :
+                (
+                    <p>✖</p>
+                )
             }
         </>
     )
