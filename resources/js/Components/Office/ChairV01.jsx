@@ -32,14 +32,19 @@ const ChairV01 = ({officeId, seatId}) => {
      */
     const handleSeatStatus = async(officeId, seatId) => {
         try {
-            const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }))
-            console.log('ユーザーを着席させました。');
-            console.log(response);
+            const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }));
+            const seatInfo = response.data.seatInfo;
             const userAvatar = response.data.userInfo.avatar_file_path;
-            setUserAvatar(userAvatar);
-
+            console.log(response);
+            setSeatStatus({isAvailable:seatInfo.is_availalble, userId: seatInfo.user_id, userAvatar: userAvatar});
+            console.log('ユーザーを着席させました。');
+            
         } catch (error) {
             console.log(error);
+            if(error.response && error.response.status === 409) {
+                alert('この席は既に着席されています。');
+                console.log('この席は既に着席されています。');
+            }
         }
     }
 
@@ -49,14 +54,10 @@ const ChairV01 = ({officeId, seatId}) => {
     useEffect(() => {
         const fetcheSeatStatus = async(officeId) => {
             const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
-            const SeatInfo = response.data.seatInfo;
+            const seatInfo = response.data.seatInfo;
             const sittingUserAvatar = response.data.userAvatar.avatar_file_path;
-            console.log(SeatInfo);
-            console.log(sittingUserAvatar);
-            // const allUsersInfo = response.data.users;
-            // console.log(allUsersInfo);
 
-            setSeatStatus({isAvailable:SeatInfo.is_availalble ,userId: SeatInfo.user_id, userAvatar: sittingUserAvatar})
+            setSeatStatus({isAvailable:seatInfo.is_availalble ,userId: seatInfo.user_id, userAvatar: sittingUserAvatar})
         }
 
         fetcheSeatStatus(officeId, seatId)
@@ -64,24 +65,20 @@ const ChairV01 = ({officeId, seatId}) => {
 
     useEffect(() => {
         const channel = window.Echo.private("office_seats");
-        // console.log(channel);
         
         channel.listen("SeatOccupied", (data) => {
-            // console.log('リアルタイムデータ：', data);
             
             // 座席状態の更新
-            setSeatStatus((prevStatus) => {
-                const updatedStatus = {
-                    ...prevStatus,
-                    [data.seatId]: {
-                        isAvailable: false,
-                        userId: data.userId,
-                        userAvatar: data.userAvatar
-                    },
-                };
-                console.log("更新された状態:", updatedStatus);
-                return updatedStatus;
-            });
+            if(seatId == data.seatId) {
+                setSeatStatus({
+                    isAvailable: false,
+                    userId: data.userId,
+                    userAvatar: data.userAvatar
+                });
+                console.log(seatId);
+                console.log(data.seatId);
+                console.log("更新された状態:", seatStatus);
+            }
         });
 
         return () => {
@@ -90,18 +87,14 @@ const ChairV01 = ({officeId, seatId}) => {
         };
     }, [window.Echo]);
 
-    useEffect(() => {
-        // console.log("シートが更新されました。", seatStatus);
-    }, [seatStatus])
-
     return(
         <>
             {
                 seatStatus.isAvailable == true ? (
-                    <Image w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                    <Image cursor="pointer" w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
                 ) :
                 (
-                    <Image w="40px" borderRadius="50%" src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                    <Image cursor="pointer" w="40px" borderRadius="50%" src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)} />
                 )
             }
         </>

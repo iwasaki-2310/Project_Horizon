@@ -1,6 +1,6 @@
 import NavBar from '@/Components/NavBar';
 import { ChatIcon } from '@chakra-ui/icons';
-import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 
@@ -17,7 +17,7 @@ const OfficeLayout = ({ children, officeName }) => {
     <Box>
       <Flex as="header" className='bg-slate-900' alignItems="center" justifyContent="space-between" h="60px" px={3}>
         <Flex alignItems="center" justifyContent="space-between">
-            <Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" />
+            <Link href='/dashboard'><Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" /></Link>
             <Text as="h1" pb="1px" color="white" ml={3}>{officeName}</Text>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" pr={3}>

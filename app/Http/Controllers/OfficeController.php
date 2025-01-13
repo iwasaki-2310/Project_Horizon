@@ -159,8 +159,13 @@ class OfficeController extends Controller
             $seatId = $request->route('seat_id');
             $userInfo = User::where('id', $this->user->id)->first();
             $userAvatar = $userInfo->avatar_file_path;
+            $seledtedSeatInfo = Seat::where('office_id', $officeId)
+            ->where('seat_id', $seatId)
+            ->first();
 
-            $seatInfo = Seat::where('office_id', $officeId)->where('seat_id', $seatId)->first();
+            if($seledtedSeatInfo->is_availalble == false) {
+                return response()->json(['warning' => '既に他のユーザーが着席中'], 409);
+            };
 
             // 使用中フラグが立っている場合はエラーを返す
             // if($seatInfo->is_availalble) {
@@ -170,11 +175,9 @@ class OfficeController extends Controller
             // イベント発火
             event(new SeatOccupied($officeId, $seatId, $request->user()->id, $userAvatar));
 
-
             DB::commit();
             
-
-            return response()->json(['success' => true, 'userInfo' => $userInfo]);
+            return response()->json(['seatInfo' => $seledtedSeatInfo, 'userInfo' => $userInfo]);
 
         } catch(Exception $e) {
             DB::rollBack();
