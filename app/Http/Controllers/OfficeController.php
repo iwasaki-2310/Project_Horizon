@@ -103,6 +103,8 @@ class OfficeController extends Controller
         $officeId = $request->route('office_id');
         $seatId = $request->route('seat_id');
         try {
+
+            // 選択した座席情報
             $seledtedSeatInfo = Seat::where('office_id', $officeId)
             ->where('seat_id', $seatId)
             ->first();
@@ -157,23 +159,30 @@ class OfficeController extends Controller
 
             $officeId = $request->route('office_id');
             $seatId = $request->route('seat_id');
+            $originalSeatId = Seat::where('office_id', $officeId)
+            ->where('user_id', $this->user->id)
+            ->value('seat_id');
+            // dd($originalSeatId);
+            Log::info('Original Seat ID: ' . $originalSeatId);
             $userInfo = User::where('id', $this->user->id)->first();
             $userAvatar = $userInfo->avatar_file_path;
             $seledtedSeatInfo = Seat::where('office_id', $officeId)
             ->where('seat_id', $seatId)
             ->first();
 
+            // 着席中のユーザーがいる場合は処理を中断
             if($seledtedSeatInfo->is_availalble == false) {
                 return response()->json(['warning' => '既に他のユーザーが着席中'], 409);
             };
 
-            // 使用中フラグが立っている場合はエラーを返す
-            // if($seatInfo->is_availalble) {
-            //     return response()->json(['error' => '既に他ユーザーが着席中です。'], 400);
-            // }
-
             // イベント発火
-            event(new SeatOccupied($officeId, $seatId, $request->user()->id, $userAvatar));
+            event(new SeatOccupied(
+                $officeId,
+                $seatId,
+                $this->user->id,
+                $userAvatar,
+                $originalSeatId,
+            ));
 
             DB::commit();
             

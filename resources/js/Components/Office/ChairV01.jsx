@@ -67,25 +67,36 @@ const ChairV01 = ({officeId, seatId}) => {
         const channel = window.Echo.private("office_seats");
         
         channel.listen("SeatOccupied", (data) => {
+            console.log(data);
+
+            if(seatId == data.originalSeatId) {
+                setSeatStatus((prevStatus) => ({
+                    ...prevStatus,
+                    isAvailable: true,
+                    userId: null,
+                    userAvatar: null
+                }));
+            }
             
             // 座席状態の更新
             if(seatId == data.seatId) {
-                setSeatStatus({
+                setSeatStatus((prevStatus) => ({
+                    ...prevStatus,
                     isAvailable: false,
                     userId: data.userId,
                     userAvatar: data.userAvatar
-                });
+                }));
                 console.log(seatId);
                 console.log(data.seatId);
-                console.log("更新された状態:", seatStatus);
             }
         });
-
+        
         return () => {
             console.log("useEffectのクリーンアップが実行されました");
             channel.unsubscribe();
         };
     }, [window.Echo]);
+    console.log("更新された状態:", seatStatus);
 
     return(
         <>

@@ -23,16 +23,18 @@ class SeatOccupied implements ShouldBroadcast
     public $seatId;
     public $userId;
     public $userAvatar;
+    public $originalSeatId;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $seatId, $userId, $userAvatar)
+    public function __construct($officeId, $seatId, $userId, $userAvatar, $originalSeatId)
     {
         $this->officeId = $officeId;
         $this->seatId = $seatId;
         $this->userId = $userId;
         $this->userAvatar = $userAvatar;
+        $this->originalSeatId = $originalSeatId;
     }
 
     /**
@@ -42,6 +44,7 @@ class SeatOccupied implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
+        Log::info('BroadcastOn called for channel: office_seats');
         return [
             new PrivateChannel('office_seats'),
         ];
@@ -49,14 +52,15 @@ class SeatOccupied implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return [
+        $data = [
+            'officeId' => $this->officeId,
             'seatId' => $this->seatId,
+            'originalSeatId' => $this->originalSeatId ?? null,
             'userId' => $this->userId,
             'userAvatar' => $this->userAvatar,
         ];
-        Log::info('SeatOccupied event triggered:', $this->broadcastWith());
+        Log::info('SeatOccupied event triggered:', $data);
+
+        return $data;
     }
-
-
-
 }
