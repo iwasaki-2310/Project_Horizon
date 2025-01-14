@@ -33,6 +33,7 @@ class OfficeController extends Controller
         $office = Office::where('id', $officeId)->firstOrFail();
         $currentCheckedInUsers = OfficeUser::leftJoin('users' ,'users.id', 'office_user.user_id')
         ->where('office_user.office_id', $officeId)
+        ->whereNotNull('office_user.entered_at')
         ->get();
             
         // dd($currentCheckedInUsers);
