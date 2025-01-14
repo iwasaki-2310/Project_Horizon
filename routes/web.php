@@ -7,6 +7,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\CheckOfficeMembership;
+use App\Http\Middleware\CheckOfficeSession;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -43,9 +44,9 @@ Route::middleware(['auth'])
     ->group(function() {
         Route::middleware([CheckOfficeMembership::class])
             ->group(function() {
-                Route::get('/{office_id}/top', [OfficeController::class, 'show'])->name('office.show');
+                Route::get('/{office_id}/top', [OfficeController::class, 'show'])->name('office.show')->middleware(CheckOfficeSession::class);
                 Route::get('/{office_id}/password', [OfficeController::class, 'showInputPassword'])->name('office.password');
-                Route::post('/{office_id}/join', [OfficeController::class, 'joinOffice'])->name('office.joinOffice');
+                Route::match(['get', 'post'], '/{office_id}/join', [OfficeController::class, 'joinOffice'])->name('office.joinOffice');
                 Route::get('/{office_id}/seats-status', [OfficeController::class, 'getSeatsStatus'])->name('office.getSeatsStatus');
                 Route::get('/{office_id}/{seat_id}/seats-status', [OfficeController::class, 'getSelectedSeatStatus'])->name('office.getSelectedSeatStatus');
                 Route::post('/{office_id}/{seat_id}/seats-sit', [OfficeController::class, 'seatOccupy'])->name('office.seatOccupy');
