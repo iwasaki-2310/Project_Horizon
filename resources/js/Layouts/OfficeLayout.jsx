@@ -4,7 +4,7 @@ import { Box, Flex, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 
-const OfficeLayout = ({ children, officeName }) => {
+const OfficeLayout = ({ children, officeName, users }) => {
     const iconsPath = '/icons';
     const officeImagePath = '/img/office';
     useEffect(() => {
@@ -22,7 +22,22 @@ const OfficeLayout = ({ children, officeName }) => {
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" pr={3}>
             <Image src={`${iconsPath}/join_users_white.svg`} alt="logo" cursor="pointer" mr={3} w="28px" />
-            <ChatIcon display="block" color="white" w="28px" cursor="pointer" />
+            <Flex>
+              {users.map((user, index) => (
+                <Image
+                  key={index}
+                  w="30px"
+                  h="30px"
+                  objectFit="cover"
+                  borderRadius="50%"
+                  css={{"& + &": {
+                    marginLeft: "-10px",
+                  }}}
+                  src={user.avatar_file_path}
+                />
+              ))}
+            </Flex>
+            <ChatIcon display="block" ml={20} color="white" w="28px" cursor="pointer" />
         </Flex>
       </Flex>
       <Box as="main" h="calc(100vh - 60px)" bgImage={`url(${officeImagePath}/flooring_2.png)`} bgSize="cover" bgRepeat="repeat">{children}</Box>

@@ -31,9 +31,15 @@ class OfficeController extends Controller
     {
         $officeId = $request->route('office_id');
         $office = Office::where('id', $officeId)->firstOrFail();
+        $currentCheckedInUsers = OfficeUser::leftJoin('users' ,'users.id', 'office_user.user_id')
+        ->where('office_user.office_id', $officeId)
+        ->get();
+            
+        // dd($currentCheckedInUsers);
 
         return Inertia::render('Office/OfficeTop', [
             'office' => $office,
+            'currentCheckedInUsers' => $currentCheckedInUsers,
         ]);
     }
 
@@ -76,6 +82,8 @@ class OfficeController extends Controller
 
             // セッションにオフィスIDを保存
             $request->session()->put('office_id', $requestedOfficeId);
+            $savedOfficeId = $request->session()->get('office_id');
+            Log::info('オフィスIDをセッションに保存しました。', ['sessionValue' => $savedOfficeId]);
 
             return response()->json(['message' => 'パスワードが正しいです。'], 200);
 

@@ -18,7 +18,7 @@ import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const OfficeTop = ({ office }) => {
+const OfficeTop = ({ office, currentCheckedInUsers }) => {
 
     const officeImagePath = '/img/office';
     const [seatStatus ,setSeatStatus] = useState({});
@@ -38,8 +38,6 @@ const OfficeTop = ({ office }) => {
         const fetchSeats = async() => {
             try {
                 const response = await axios.get(route('office.getSeatsStatus', {office_id: office.id}));
-                // console.log(response.data.seats[0].is_availalble);
-                // setSeatStatus(data);
             } catch (error) {
                 console.error(error);
             }
@@ -52,7 +50,7 @@ const OfficeTop = ({ office }) => {
             <Head>
                 <meta name="body-class" content="overflow-hidden" />
             </Head>
-            <OfficeLayout officeName={office.office_name}>
+            <OfficeLayout officeName={office.office_name} users={currentCheckedInUsers}>
                 <Flex flexWrap="wrap" justifyContent="space-between" px={5}>
                     <Pod>
                         <ChairGroup>

@@ -24,11 +24,17 @@ class DashboardController extends Controller
         $this->user = $request->user();
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        // オフィスIDのセッションを破棄
+        $request->session()->forget('office_id');
+
         $offices = $this->user->offices()->get();
         $initialPublicOffices = Office::where('public_flag', 1)->get();
         $userInfo = $this->user;
+
+        Log::info('office_idのセッションを破棄しました。', ['sessionValue' => $request->session()->get('office_id')]);
+        
         return inertia::render('Dashboard', [
             'initialOffices' => $offices,
             'userInfo'=> $userInfo,

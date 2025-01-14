@@ -34,7 +34,6 @@ Route::get('/about', function () {
 Route::resource('/users', UsersController::class);
 
 Route::prefix('dashboard')->group(function () {
-    // return Inertia::render('Dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::post('/create-office', [DashboardController::class, 'createOffice'])->name('dashboard.createOffice');
 })->middleware(['auth', 'verified'])->name('dashboard');
