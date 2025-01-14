@@ -7,6 +7,7 @@ use App\Models\Office;
 use App\Models\OfficeUser;
 use App\Models\Seat;
 use App\Models\User;
+use Carbon\Carbon;
 use CreateOfficeUserTable;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -55,15 +56,23 @@ class OfficeController extends Controller
         try {
 
             // パスワード誤り
-            if($office->office_password !== $requestedOfficePassword) {
+            if($office->office_password && $office->office_password !== $requestedOfficePassword) {
                 return response()->json(['message' => 'パスワードが間違っています。'], 401);
             }
 
             // パスワード成功
-            OfficeUser::insert([
-                'office_id' => $requestedOfficeId,
-                'user_id' => $this->user->id,
-            ]);
+            OfficeUser::upsert(
+                [
+                    // レコードデータ
+                    [
+                        'office_id' => $requestedOfficeId,
+                        'user_id' => $this->user->id,
+                        'entered_at' => Carbon::now(),
+                    ]
+                ],
+                ['office_id', 'user_id'], //一意にする条件
+                ['entered_at'] //updateの場合に更新するカラム
+            );
 
             // セッションにオフィスIDを保存
             $request->session()->put('office_id', $requestedOfficeId);

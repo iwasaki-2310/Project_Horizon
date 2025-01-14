@@ -34,6 +34,11 @@ const SearchModal = props => {
     const { isOpen, onClose, modalTitle, tableColumns, tableData, iconPath } = props;
     const iconsPath = '/icons';
 
+    // オフィスとユーザーの中間テーブル（オフィスユーザーテーブル）にユーザーid,入室時刻を付与
+    const handleJoinOFfice = async(officeId) => {
+        const response = await axios.post(route('office.joinOffice', officeId));
+    }
+
     return (
         <ChakraModal
             isOpen={isOpen}
@@ -70,7 +75,7 @@ const SearchModal = props => {
                                         ))}
                                         {data['office_id'] && (
                                             <Td p={0}>
-                                                <Link href={`/office/${data['office_id']['value']}/top`}>
+                                                <Link href={`/office/${data['office_id']['value']}/top`} onClick={() => handleJoinOFfice(data['office_id']['value'])}>
                                                     <Image src={iconPath} w="25px" cursor="pointer" />
                                                 </Link>
                                             </Td>

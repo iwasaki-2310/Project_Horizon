@@ -70,6 +70,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
     const closeshowSearchOfficeModal = () => {
         setIsSerchOfficeModalOpen(false);
     };
+    console.log(initialOffices);
 
     const handleSubmit = async data => {
 
@@ -100,6 +101,11 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
         setSelectedOffice(office);
         onOpen();
     };
+
+    // オフィスとユーザーの中間テーブル（オフィスユーザーテーブル）にユーザーid,入室時刻を付与
+    const handleJoinOFfice = async(officeId) => {
+        const response = await axios.post(route('office.joinOffice', officeId));
+    }
 
     const fields = [
         {
@@ -248,7 +254,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                                                 <Flex justifyContent="space-between">
                                                     <Text fontWeight="bold" color="white">{office?.office_name}</Text>
                                                     <Flex alignItems="center">
-                                                        <Link href={`/office/${office.id}/top`}>
+                                                        <Link href={`/office/${office.id}/top`} onClick={() => handleJoinOFfice(office.id)}>
                                                             <Image src={`${iconsPath}/enter_white.svg`} w="25px" cursor="pointer" />
                                                         </Link>
                                                         <LinkIcon onClick={handleLinkCopy} cursor="pointer" ml={4} color="white" />

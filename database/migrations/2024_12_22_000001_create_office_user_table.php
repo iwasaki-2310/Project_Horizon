@@ -17,6 +17,8 @@ class CreateOfficeUserTable extends Migration
             $table->foreignId('office_id')->constrained()->onDelete('cascade')->comment('オフィスID');
             $table->timestamp('entered_at')->nullable()->comment('入室時刻');
             $table->timestamps();
+
+            $table->unique(['office_id', 'user_id']);
         });
     }
 
