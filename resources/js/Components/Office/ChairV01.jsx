@@ -8,7 +8,11 @@ import Echo from "laravel-echo";
 const ChairV01 = ({officeId, seatId}) => {
     const officeImagePath = '/img/office';
     const [userAvatar, setUserAvatar] = useState();
-    const [seatStatus, setSeatStatus] = useState({});
+    const [seatStatus, setSeatStatus] = useState({
+        isAvailable: true,
+        userId: null,
+        userAvatar: null,
+    });
     const [isAvailable, setIsAvailable] = useState(true);
 
     /**
@@ -28,84 +32,92 @@ const ChairV01 = ({officeId, seatId}) => {
     });
 
     /**
-     * 座席情報の更新
+     * 座席情報の初期化
+     */
+    useEffect(() => {
+        const fetcheSeatStatus = async(officeId, seatId) => {
+            const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
+            const seatInfo = response.data.seatInfo;
+            const sittingUserAvatar = response.data.userAvatar.avatar_file_path;
+
+            setSeatStatus({
+                isAvailable:seatInfo.is_availalble,
+                userId: seatInfo.user_id,
+                userAvatar: sittingUserAvatar,
+            })
+        }
+
+        if (seatStatus.userAvatar == null) {
+            fetcheSeatStatus(officeId, seatId);
+        }
+
+    }, [officeId, seatId, seatStatus.userAvatar]);
+
+    /**
+     * reverbサーバーより非同期で座席の状態を取得
+     */
+    useEffect(() => {
+        const channel = window.Echo.private("office_seats");
+        
+        channel.listen("SeatOccupied", (data) => {
+            setSeatStatus((prevStatus) => {
+                const updatedStatus = {...prevStatus};
+                
+                if(seatId == data.originalSeatId) {
+                    updatedStatus.isAvailable = true;
+                    updatedStatus.userId = null;
+                    updatedStatus.userAvatar = null;
+                }
+                
+                // 座席状態の更新
+                if(seatId == data.seatId) {
+                    updatedStatus.isAvailable = false;
+                    updatedStatus.userId = data.userId;
+                    updatedStatus.userAvatar = data.userAvatar;
+                }
+
+                return updatedStatus;
+            })
+        });
+        
+        return () => {
+            channel.unsubscribe();
+        };
+    }, [window.Echo]);
+
+    /**
+     * ユーザー操作により座席情報の更新
      */
     const handleSeatStatus = async(officeId, seatId) => {
         try {
             const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }));
-            const seatInfo = response.data.seatInfo;
-            const userAvatar = response.data.userInfo.avatar_file_path;
-            console.log(response);
-            setSeatStatus({isAvailable:seatInfo.is_availalble, userId: seatInfo.user_id, userAvatar: userAvatar});
-            console.log('ユーザーを着席させました。');
             
         } catch (error) {
             console.log(error);
             if(error.response && error.response.status === 409) {
                 alert('この席は既に着席されています。');
-                console.log('この席は既に着席されています。');
             }
         }
     }
 
-    /**
-     * 座席情報の取得
-     */
-    useEffect(() => {
-        const fetcheSeatStatus = async(officeId) => {
-            const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
-            const seatInfo = response.data.seatInfo;
-            const sittingUserAvatar = response.data.userAvatar.avatar_file_path;
-
-            setSeatStatus({isAvailable:seatInfo.is_availalble ,userId: seatInfo.user_id, userAvatar: sittingUserAvatar})
-        }
-
-        fetcheSeatStatus(officeId, seatId)
-    }, []);
-
-    useEffect(() => {
-        const channel = window.Echo.private("office_seats");
-        
-        channel.listen("SeatOccupied", (data) => {
-            console.log(data);
-
-            if(seatId == data.originalSeatId) {
-                setSeatStatus((prevStatus) => ({
-                    ...prevStatus,
-                    isAvailable: true,
-                    userId: null,
-                    userAvatar: null
-                }));
-            }
-            
-            // 座席状態の更新
-            if(seatId == data.seatId) {
-                setSeatStatus((prevStatus) => ({
-                    ...prevStatus,
-                    isAvailable: false,
-                    userId: data.userId,
-                    userAvatar: data.userAvatar
-                }));
-                console.log(seatId);
-                console.log(data.seatId);
-            }
-        });
-        
-        return () => {
-            console.log("useEffectのクリーンアップが実行されました");
-            channel.unsubscribe();
-        };
-    }, [window.Echo]);
-    console.log("更新された状態:", seatStatus);
 
     return(
         <>
             {
                 seatStatus.isAvailable == true ? (
-                    <Image cursor="pointer" w="40px" src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                    <Image
+                        cursor="pointer"
+                        w="40px"
+                        src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)}
+                    />
                 ) :
                 (
-                    <Image cursor="pointer" w="40px" borderRadius="50%" src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)} />
+                    <Image
+                        cursor="pointer"
+                        w="40px"
+                        borderRadius="50%"
+                        src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)}
+                    />
                 )
             }
         </>
