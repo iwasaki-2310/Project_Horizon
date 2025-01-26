@@ -4,20 +4,59 @@ import { Box, Flex, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 
-const OfficeLayout = ({ children, officeName, users }) => {
+const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
     const iconsPath = '/icons';
     const officeImagePath = '/img/office';
+
     useEffect(() => {
         console.log('Mount Layout');
         return () => {
             console.log('UnMount Layout');
         };
     }, []);
+
+    const handleLeaveOffice = (event, officeId, userId) => {
+      try {
+          const payload = new URLSearchParams();
+          payload.append('office_id', officeId);
+          payload.append('user_id', userId);
+          payload.append('_token', document.querySelector('meta[name="csrf-token"]').content); // CSRFトークンを追加
+  
+          // `navigator.sendBeacon`を使用して非同期リクエストを送信
+          const url = route('office.leaveOffice', { office_id: officeId, user_id: userId }, true);
+
+          navigator.sendBeacon(url, payload);
+  
+          console.log('ビーコンを使用してユーザーの退出処理を送信しました');
+
+          console.log('URL:', url);
+          localStorage.setItem('lastURL', `URL: ${url}`);
+          localStorage.setItem('lastLog', "ビーコンを使用してユーザーの退出処理を送信しました");
+          localStorage.setItem('OfficeID', `OfficeID：${officeId}`);
+          localStorage.setItem('UserID', `UserID：${userId}`);
+          
+          setTimeout(() => {
+              console.log( event.target.href);
+              window.location.href = '/dashboard';
+          }, 100);
+      } catch (error) {
+          console.error('ビーコン送信中にエラーが発生しました:', error);
+      }
+  };
+
+
   return (
     <Box>
       <Flex as="header" className='bg-slate-900' alignItems="center" justifyContent="space-between" h="60px" px={3}>
         <Flex alignItems="center" justifyContent="space-between">
-            <Link href='/dashboard'><Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" /></Link>
+            <Link
+              href='/dashboard'
+              onClick={(event) => {
+                handleLeaveOffice(event, officeId, userId);
+                console.log("aaaaaaa");
+              }}
+            >
+                <Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" /></Link>
             <Text as="h1" pb="1px" color="white" ml={3}>{officeName}</Text>
         </Flex>
         <Flex alignItems="center" justifyContent="space-between" pr={3}>

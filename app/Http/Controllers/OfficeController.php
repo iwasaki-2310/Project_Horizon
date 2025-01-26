@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OfficeLeave;
 use App\Events\SeatOccupied;
 use App\Models\Office;
 use App\Models\OfficeUser;
@@ -29,6 +30,7 @@ class OfficeController extends Controller
 
     public function show(Request $request)
     {
+        $handlingUserInfo = $this->user;
         $officeId = $request->route('office_id');
         $office = Office::where('id', $officeId)->firstOrFail();
         $currentCheckedInUsers = OfficeUser::leftJoin('users' ,'users.id', 'office_user.user_id')
@@ -39,6 +41,7 @@ class OfficeController extends Controller
         // dd($currentCheckedInUsers);
 
         return Inertia::render('Office/OfficeTop', [
+            'handlingUserInfo' => $handlingUserInfo,
             'office' => $office,
             'currentCheckedInUsers' => $currentCheckedInUsers,
         ]);
@@ -142,34 +145,6 @@ class OfficeController extends Controller
         }
     }
 
-    /**
-     * 着席処理
-     */
-    // public function sitSeat(Request $request)
-    // {
-    //     $officeId = $request->route('office_id');
-    //     $seatId = $request->route('seat_id');
-
-    //     try {
-    //         // 着席処理
-    //         Seat::where('office_id', $officeId)
-    //         ->where('seat_id', $seatId)
-    //         ->update([
-    //             'is_availalble' => false,
-    //             'user_id' => $this->user->id,
-    //         ]);
-
-    //         // アバター取得
-    //         $userInfo = User::where('id', $this->user->id)->first();
-
-    //         return response()->json(['seatId' => $seatId, 'userInfo' => $userInfo], 200);
-
-    //     } catch(Exception $e) {
-    //         Log::error($e->getMessage());
-    //         return back()->withErrors(['error' => '着席の処理に失敗しました。']);
-    //     }
-    // }
-
     public function seatOccupy(Request $request)
     {
         DB::beginTransaction();
@@ -180,7 +155,6 @@ class OfficeController extends Controller
             $originalSeatId = Seat::where('office_id', $officeId)
             ->where('user_id', $this->user->id)
             ->value('seat_id');
-            // dd($originalSeatId);
             Log::info('Original Seat ID: ' . $originalSeatId);
             $userInfo = User::where('id', $this->user->id)->first();
             $userAvatar = $userInfo->avatar_file_path;
@@ -205,6 +179,40 @@ class OfficeController extends Controller
             DB::commit();
             
             return response()->json(['seatInfo' => $seledtedSeatInfo, 'userInfo' => $userInfo]);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => '座席の使用状況の更新に失敗しました。'], 500);
+        }
+
+    }
+
+    /**
+     * ユーザーの離脱処理
+     */    
+    public function leaveOffice(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Request received in leaveOffice', $request->all());
+
+            
+            $officeId = $request->route('office_id');
+            $userId = $request->route('user_id');
+            $userInfo = User::where('id', $userId)->first();
+            
+            // イベント発火
+            Log::info('OfficeLeave イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
+            event(new OfficeLeave (
+                $officeId,
+                $userInfo->id,
+            ));
+            Log::info('OfficeLeave event has been fired');
+
+            DB::commit();
+            
+            return response()->json(['userInfo' => $userInfo]);
 
         } catch(Exception $e) {
             DB::rollBack();

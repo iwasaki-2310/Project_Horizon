@@ -9,3 +9,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('office_seats', function($user) {
     return $user !== null;
 });
+Broadcast::channel('office_entering_user', function($user) {
+    return true;
+});

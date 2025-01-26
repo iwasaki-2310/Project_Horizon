@@ -124,4 +124,8 @@ const ChairV01 = ({officeId, seatId}) => {
     )
 }
 
+
+
+
+
 export default ChairV01;
