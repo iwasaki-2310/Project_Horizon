@@ -32,6 +32,7 @@ const Index = props => {
                 <Image
                   w="50px"
                   h="50px"
+                  objectFit="cover"
                   rounded="full"
                   src={user.avatar_file_path}
                   alt="アバター"

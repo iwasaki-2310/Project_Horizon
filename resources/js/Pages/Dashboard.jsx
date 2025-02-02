@@ -181,6 +181,7 @@ export default function Dashboard({ auth, initialOffices, initialPublicOffices, 
                                 <Image
                                     w="50px"
                                     h="50px"
+                                    objectFit="cover"
                                     rounded="full"
                                     src={userInfo.avatar_file_path}
                                     alt="アバター"
