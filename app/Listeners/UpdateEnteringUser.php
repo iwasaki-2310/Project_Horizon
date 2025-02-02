@@ -29,12 +29,12 @@ class UpdateEnteringUser
     {   
         Log::info('リスナー起動');
         try {
-            OfficeUser::where('user_id', $event->userId)
+            OfficeUser::where('user_id', $event->userInfo->id)
             ->update([
                 'entered_at' => Null,
             ]);
 
-            Log::info('ユーザーの退出に成功：' . $event->userId . 'がofficeID' . $event->officeId . 'から退出しました。');
+            Log::info('ユーザーの退出に成功：' . $event->userInfo->id . 'がofficeID' . $event->officeId . 'から退出しました。');
         } catch(Exception $e) {
             Log::error('ユーザーの退出処理中にエラーが発生しました。：' . $e->getMessage());
         }

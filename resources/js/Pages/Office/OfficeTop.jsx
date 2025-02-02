@@ -36,53 +36,7 @@ const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers }) => {
 
     const officeImagePath = '/img/office';
     const [seatStatus ,setSeatStatus] = useState({});
-
-    console.log(office);
-
-    // const handleLeaveOffice = (event, officeId, userId) => {
-    //     try {
-    //         const payload = new URLSearchParams();
-    //         payload.append('office_id', officeId);
-    //         payload.append('user_id', userId);
-    //         payload.append('_token', document.querySelector('meta[name="csrf-token"]').content); // CSRFトークンを追加
     
-    //         // `navigator.sendBeacon`を使用して非同期リクエストを送信
-    //         const url = route('office.leaveOffice', { office_id: officeId, user_id: userId }, true);
-
-    //         navigator.sendBeacon(url, payload);
-    
-    //         console.log('ビーコンを使用してユーザーの退出処理を送信しました');
-
-    //         console.log('URL:', url);
-    //         localStorage.setItem('lastURL', `URL: ${url}`);
-    //         localStorage.setItem('lastLog', "ビーコンを使用してユーザーの退出処理を送信しました");
-    //         localStorage.setItem('OfficeID', `OfficeID：${officeId}`);
-    //         localStorage.setItem('UserID', `UserID：${userId}`);
-            
-    //         setTimeout(() => {
-    //             console.log( event.target.href);
-    //             window.location.href = event.target.href;
-    //         }, 100);
-    //     } catch (error) {
-    //         console.error('ビーコン送信中にエラーが発生しました:', error);
-    //     }
-    // };
-    
-    // `beforeunload`イベントにリスナーを登録
-    // window.addEventListener('beforeunload', () => handleLeaveOffice(office.id, handlingUserInfo.id));
-    
-
-
-    // window.addEventListener('beforeunload', () => {
-    //     const payload = new FormData();
-    //     payload.append('office_id', office.id);
-    //     payload.append('user_id', handlingUserInfo.id);
-    
-    //     navigator.sendBeacon(route('office.leaveOffice'), payload);
-    // });
-    
-    
-
     // このページのみBodyタグにoverfro-hiddenを付与
     useEffect(() => {
         document.body.classList.add('overflow-hidden');

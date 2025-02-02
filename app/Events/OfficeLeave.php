@@ -20,15 +20,15 @@ class OfficeLeave implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $officeId;
-    public $userId;
+    public $userInfo;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $userId)
+    public function __construct($officeId, $userInfo)
     {
         $this->officeId = $officeId;
-        $this->userId = $userId;
+        $this->userInfo = $userInfo;
     }
 
     /**
@@ -48,7 +48,11 @@ class OfficeLeave implements ShouldBroadcast
     {
         $data = [
             'officeId' => $this->officeId,
-            'userId' => $this->userId,
+            'user' => [
+                'id' => $this->userInfo->id,
+                'name' => $this->userInfo->name,
+                'avatar_file_path' => $this->userInfo->avatar_file_path,
+            ]
         ];
         Log::info('OfficeLeave event triggered:', $data);
 

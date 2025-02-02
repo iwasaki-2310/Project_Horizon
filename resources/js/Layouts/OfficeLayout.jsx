@@ -2,18 +2,43 @@ import NavBar from '@/Components/NavBar';
 import { ChatIcon } from '@chakra-ui/icons';
 import { Box, Flex, Heading, Image, Link, Text } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
-import { useEffect } from 'react';
+import Echo from 'laravel-echo';
+import { useEffect, useState } from 'react';
 
 const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
     const iconsPath = '/icons';
     const officeImagePath = '/img/office';
 
+    const [enteringUsers, setEnteringUsers] = useState(users);
+
+    window.Pusher = Pusher;
+    const echo = new Echo({
+        broadcaster: "reverb",
+        key: import.meta.env.VITE_REVERB_APP_KEY, // Laravelの設定に合わせて変更
+        wsHost: import.meta.env.VITE_REVERB_HOST,    // ブラウザからアクセスする際のホスト名
+        wsPort: import.meta.env.VITE_REVERB_PORT,           // コンテナ側でEXPOSEしている WebSocketポート
+        wssPort: import.meta.env.VITE_REVERB_PORT,          // HTTPS/SSLを使わないローカルなら実質同じポートでOK
+        forceTLS: import.meta.env.VITE_REVERB_FORCE_TLS,        // HTTPSを使用していない場合はfalse
+        disableStats: true,
+        cluster: import.meta.env.VITE_REVERB_CLUSTER,
+        enabledTransports: 'ws'
+    });
+
+    /**
+    * 退室時にアイコンを削除
+    */
     useEffect(() => {
-        console.log('Mount Layout');
-        return () => {
-            console.log('UnMount Layout');
-        };
-    }, []);
+      const channel = window.Echo.private("office_entering_user");
+
+      channel.listen("OfficeLeave", (data) => {
+        console.log(data);
+        setEnteringUsers((prevUsers) => prevUsers.filter(user => user.id !== data.user.id));
+      });
+
+      return () => {
+        channel.stopListening("OfficeLeave");
+      }
+    }, [window.Echo]);
 
     const handleLeaveOffice = (event, officeId, userId) => {
       try {
@@ -62,7 +87,7 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
         <Flex alignItems="center" justifyContent="space-between" pr={3}>
             <Image src={`${iconsPath}/join_users_white.svg`} alt="logo" cursor="pointer" mr={3} w="28px" />
             <Flex>
-              {users.map((user, index) => (
+              {enteringUsers.map((user, index) => (
                 <Image
                   key={index}
                   w="30px"

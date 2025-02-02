@@ -206,7 +206,7 @@ class OfficeController extends Controller
             Log::info('OfficeLeave イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
             event(new OfficeLeave (
                 $officeId,
-                $userInfo->id,
+                $userInfo,
             ));
             Log::info('OfficeLeave event has been fired');
 
