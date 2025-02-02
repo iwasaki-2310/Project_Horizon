@@ -12,23 +12,25 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
 /**
- * イベントクラス OfficeLeave
+ * イベントクラス OfficeUserStatusUpdated
  * オフィスの
  */
-class OfficeLeave implements ShouldBroadcast
+class OfficeUserStatusUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $officeId;
     public $userInfo;
+    public $eventAction;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $userInfo)
+    public function __construct($officeId, $userInfo, $eventAction)
     {
         $this->officeId = $officeId;
         $this->userInfo = $userInfo;
+        $this->eventAction = $eventAction;
     }
 
     /**
@@ -52,9 +54,10 @@ class OfficeLeave implements ShouldBroadcast
                 'id' => $this->userInfo->id,
                 'name' => $this->userInfo->name,
                 'avatar_file_path' => $this->userInfo->avatar_file_path,
-            ]
+            ],
+            'eventAction' => $this->eventAction,
         ];
-        Log::info('OfficeLeave event triggered:', $data);
+        Log::info('OfficeUserStatusUpdated event triggered:', $data);
 
         return $data;
     }

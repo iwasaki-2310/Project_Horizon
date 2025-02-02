@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\OfficeLeave;
+use App\Events\OfficeUserStatusUpdated;
 use App\Events\SeatOccupied;
 use App\Models\Office;
 use App\Models\OfficeUser;
@@ -62,7 +62,9 @@ class OfficeController extends Controller
         $requestedOfficePassword = $request->office_password;
         $requestedOfficeId = $request->route('office_id');
         $office = Office::where('id', $requestedOfficeId)->first();
+        $eventAction = 'join';
 
+        DB::beginTransaction();
         try {
 
             // パスワード誤り
@@ -70,29 +72,26 @@ class OfficeController extends Controller
                 return response()->json(['message' => 'パスワードが間違っています。'], 401);
             }
 
-            // パスワード成功
-            OfficeUser::upsert(
-                [
-                    // レコードデータ
-                    [
-                        'office_id' => $requestedOfficeId,
-                        'user_id' => $this->user->id,
-                        'entered_at' => Carbon::now(),
-                    ]
-                ],
-                ['office_id', 'user_id'], //一意にする条件
-                ['entered_at'] //updateの場合に更新するカラム
-            );
+            // パスワード成功の場合
+            event(new OfficeUserStatusUpdated (
+                $requestedOfficeId,
+                $this->user,
+                $eventAction,
+            ));
 
             // セッションにオフィスIDを保存
             $request->session()->put('office_id', $requestedOfficeId);
             $savedOfficeId = $request->session()->get('office_id');
+
             Log::info('オフィスIDをセッションに保存しました。', ['sessionValue' => $savedOfficeId]);
+
+            DB::commit();
 
             return response()->json(['message' => 'パスワードが正しいです。'], 200);
 
         } catch (Exception $e) {
-            dd($e);
+            DB::rollBack();
+            Log::error($e->getMessage());
             return response()->json(['message' => Log::error($e->getMessage())], 500);
         }
 
@@ -193,6 +192,7 @@ class OfficeController extends Controller
      */    
     public function leaveOffice(Request $request)
     {
+        $eventAction = 'leave';
         DB::beginTransaction();
         try {
             Log::info('Request received in leaveOffice', $request->all());
@@ -203,12 +203,13 @@ class OfficeController extends Controller
             $userInfo = User::where('id', $userId)->first();
             
             // イベント発火
-            Log::info('OfficeLeave イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
-            event(new OfficeLeave (
+            Log::info('OfficeUserStatusUpdated イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
+            event(new OfficeUserStatusUpdated (
                 $officeId,
                 $userInfo,
+                $eventAction,
             ));
-            Log::info('OfficeLeave event has been fired');
+            Log::info('OfficeUserStatusUpdated event has been fired');
 
             DB::commit();
             

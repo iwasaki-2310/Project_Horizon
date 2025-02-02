@@ -30,13 +30,22 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
     useEffect(() => {
       const channel = window.Echo.private("office_entering_user");
 
-      channel.listen("OfficeLeave", (data) => {
+      channel.listen("OfficeUserStatusUpdated", (data) => {
         console.log(data);
-        setEnteringUsers((prevUsers) => prevUsers.filter(user => user.id !== data.user.id));
+        if(data.eventAction === 'join') {
+          setEnteringUsers((prevUsers) => {
+            if(prevUsers.some(user => user.id === data.user.id)) {
+              return prevUsers;
+            }
+            return [...prevUsers, data.user];
+          })
+        } else if(data.eventAction === 'leave') {
+          setEnteringUsers((prevUsers) => prevUsers.filter(user => user.id !== data.user.id));
+        }
       });
 
       return () => {
-        channel.stopListening("OfficeLeave");
+        channel.stopListening("OfficeUserStatusUpdated");
       }
     }, [window.Echo]);
 
