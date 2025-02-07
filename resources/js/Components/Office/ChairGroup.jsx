@@ -2,7 +2,7 @@ import { Flex } from "@chakra-ui/react";
 
 const ChairGroup = ({children}) => {
     return(
-        <Flex justifyContent="space-between">
+        <Flex flexDirection="column" justifyContent="space-between" h="90%">
             {children}
         </Flex>
     )

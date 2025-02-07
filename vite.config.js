@@ -4,12 +4,12 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     server: {
-        port: 5174, // コンテナ内のポート
+        port: 5175, // コンテナ内のポート
         host: '0.0.0.0', // 外部アクセスを許可
         strictPort: true, // ポートが使用中の場合にエラーを出す
         hmr: {
             host: 'localhost', // ホストマシンのホスト名
-            port: 5174, // ホストマシンのポート
+            port: 5175, // ホストマシンのポート
         },
     },
     plugins: [

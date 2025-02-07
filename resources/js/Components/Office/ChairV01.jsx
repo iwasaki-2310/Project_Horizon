@@ -1,4 +1,4 @@
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -58,17 +58,17 @@ const ChairV01 = ({officeId, seatId}) => {
      */
     useEffect(() => {
         const channel = window.Echo.private("office_seats");
-        
+
         channel.listen("SeatOccupied", (data) => {
             setSeatStatus((prevStatus) => {
                 const updatedStatus = {...prevStatus};
-                
+
                 if(seatId == data.originalSeatId) {
                     updatedStatus.isAvailable = true;
                     updatedStatus.userId = null;
                     updatedStatus.userAvatar = null;
                 }
-                
+
                 // 座席状態の更新
                 if(seatId == data.seatId) {
                     updatedStatus.isAvailable = false;
@@ -79,7 +79,7 @@ const ChairV01 = ({officeId, seatId}) => {
                 return updatedStatus;
             })
         });
-        
+
         return () => {
             channel.unsubscribe();
         };
@@ -91,7 +91,7 @@ const ChairV01 = ({officeId, seatId}) => {
     const handleSeatStatus = async(officeId, seatId) => {
         try {
             const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }));
-            
+
         } catch (error) {
             console.log(error);
             if(error.response && error.response.status === 409) {
@@ -105,17 +105,23 @@ const ChairV01 = ({officeId, seatId}) => {
         <>
             {
                 seatStatus.isAvailable == true ? (
-                    <Image
+                    <Box
                         cursor="pointer"
-                        w="40px"
-                        src={`${officeImagePath}/chair.svg`} onClick={ () => handleSeatStatus(officeId, seatId)}
+                        w="60px"
+                        h="60px"
+                        borderRadius="50%"
+                        bgColor="#aca8a8"
+                        border="1px solid red"
+                        onClick={ () => handleSeatStatus(officeId, seatId)}
                     />
                 ) :
                 (
                     <Image
                         cursor="pointer"
-                        w="40px"
+                        w="60px"
+                        h="60px"
                         borderRadius="50%"
+                        objectFit="cover"
                         src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)}
                     />
                 )

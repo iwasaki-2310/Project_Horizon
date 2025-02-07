@@ -36,7 +36,7 @@ const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers }) => {
 
     const officeImagePath = '/img/office';
     const [seatStatus ,setSeatStatus] = useState({});
-    
+
     // このページのみBodyタグにoverfro-hiddenを付与
     useEffect(() => {
         document.body.classList.add('overflow-hidden');
@@ -68,18 +68,20 @@ const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers }) => {
                 userId={handlingUserInfo.id}
                 users={currentCheckedInUsers}
                 >
-                <Flex flexWrap="wrap" justifyContent="space-between" px={5}>
+                <Flex flexWrap="wrap" justifyContent="space-between" alignItems="center" px={5} w="100%" h="100%">
                     <Pod>
                         <ChairGroup>
                             <ChairV01 officeId={office.id} seatId={1} />
                             <ChairV01 officeId={office.id} seatId={2} />
                             <ChairV01 officeId={office.id} seatId={3} />
+                            <ChairV01 officeId={office.id} seatId={4} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 officeId={office.id} seatId={4} />
                             <ChairV01 officeId={office.id} seatId={5} />
                             <ChairV01 officeId={office.id} seatId={6} />
+                            <ChairV01 officeId={office.id} seatId={7} />
+                            <ChairV01 officeId={office.id} seatId={8} />
                         </ChairGroup>
                     </Pod>
                     {/* <Pod>

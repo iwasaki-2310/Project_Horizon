@@ -10,7 +10,7 @@ services:
             - 'host.docker.internal:host-gateway'
         ports:
             - '81:80'
-            - '5174:5174'
+            - '5175:5175'
             - '8080:8080'
             - '6001:6001'
         environment:

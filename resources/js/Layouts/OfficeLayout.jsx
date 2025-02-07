@@ -55,12 +55,12 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
           payload.append('office_id', officeId);
           payload.append('user_id', userId);
           payload.append('_token', document.querySelector('meta[name="csrf-token"]').content); // CSRFトークンを追加
-  
+
           // `navigator.sendBeacon`を使用して非同期リクエストを送信
           const url = route('office.leaveOffice', { office_id: officeId, user_id: userId }, true);
 
           navigator.sendBeacon(url, payload);
-  
+
           console.log('ビーコンを使用してユーザーの退出処理を送信しました');
 
           console.log('URL:', url);
@@ -68,7 +68,7 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
           localStorage.setItem('lastLog', "ビーコンを使用してユーザーの退出処理を送信しました");
           localStorage.setItem('OfficeID', `OfficeID：${officeId}`);
           localStorage.setItem('UserID', `UserID：${userId}`);
-          
+
           setTimeout(() => {
               console.log( event.target.href);
               window.location.href = '/dashboard';
@@ -113,7 +113,15 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
             <ChatIcon display="block" ml={20} color="white" w="28px" cursor="pointer" />
         </Flex>
       </Flex>
-      <Box as="main" h="calc(100vh - 60px)" bgImage={`url(${officeImagePath}/flooring_2.png)`} bgSize="cover" bgRepeat="repeat">{children}</Box>
+      <Box
+        as="main"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        h="calc(100vh - 60px)"
+        bgImage={`url(${officeImagePath}/flooring_2.png)`}
+        bgSize="cover"
+        bgRepeat="repeat">{children}</Box>
     </Box>
   );
 };

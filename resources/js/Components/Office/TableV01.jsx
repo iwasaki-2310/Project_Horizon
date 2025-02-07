@@ -1,9 +1,9 @@
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 
 const TableV01 = ({children}) => {
     const officeImagePath = '/img/office';
     return(
-        <Image src={`${officeImagePath}/table.svg`} py={1} />
+        <Box m="0 20px" w="10%" h="90%" borderRadius="70px / 90px" bgColor="white"></Box>
     )
 }
 
