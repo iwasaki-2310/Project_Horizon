@@ -19,7 +19,7 @@ import axios from 'axios';
 import Echo from 'laravel-echo';
 import { useEffect, useState } from 'react';
 
-const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers }) => {
+const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers, chats }) => {
 
     window.Pusher = Pusher;
     const echo = new Echo({
@@ -67,21 +67,21 @@ const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers }) => {
                 officeId={office.id}
                 userId={handlingUserInfo.id}
                 users={currentCheckedInUsers}
-                >
+            >
                 <Flex flexWrap="wrap" justifyContent="space-between" alignItems="center" px={5} w="100%" h="100%">
                     <Pod>
                         <ChairGroup>
-                            <ChairV01 officeId={office.id} seatId={1} />
-                            <ChairV01 officeId={office.id} seatId={2} />
-                            <ChairV01 officeId={office.id} seatId={3} />
-                            <ChairV01 officeId={office.id} seatId={4} />
+                            <ChairV01 officeId={office.id} seatId={1} chats={chats} speechBubble={"left"} />
+                            <ChairV01 officeId={office.id} seatId={2} chats={chats} speechBubble={"left"} />
+                            <ChairV01 officeId={office.id} seatId={3} chats={chats} speechBubble={"left"} />
+                            <ChairV01 officeId={office.id} seatId={4} chats={chats} speechBubble={"left"} />
                         </ChairGroup>
                         <TableV01 />
                         <ChairGroup>
-                            <ChairV01 officeId={office.id} seatId={5} />
-                            <ChairV01 officeId={office.id} seatId={6} />
-                            <ChairV01 officeId={office.id} seatId={7} />
-                            <ChairV01 officeId={office.id} seatId={8} />
+                            <ChairV01 officeId={office.id} seatId={5} chats={chats} speechBubble={"right"} />
+                            <ChairV01 officeId={office.id} seatId={6} chats={chats} speechBubble={"right"} />
+                            <ChairV01 officeId={office.id} seatId={7} chats={chats} speechBubble={"right"} />
+                            <ChairV01 officeId={office.id} seatId={8} chats={chats} speechBubble={"right"} />
                         </ChairGroup>
                     </Pod>
                     {/* <Pod>

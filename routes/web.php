@@ -50,6 +50,7 @@ Route::middleware(['auth'])
                 Route::get('/{office_id}/{seat_id}/seats-status', [OfficeController::class, 'getSelectedSeatStatus'])->name('office.getSelectedSeatStatus');
                 Route::post('/{office_id}/{seat_id}/seats-sit', [OfficeController::class, 'seatOccupy'])->name('office.seatOccupy');
                 Route::post('/{office_id}/{user_id}/leave-user', [OfficeController::class, 'leaveOffice'])->name('office.leaveOffice');
+                Route::post('/{office_id}/{user_id}/send-message', [OfficeController::class, 'sendMessage'])->name('office.sendMessage');
             });
     });
 

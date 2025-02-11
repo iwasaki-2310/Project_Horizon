@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OfficeUserStatusUpdated;
 use App\Events\SeatOccupied;
+use App\Models\Chat;
 use App\Models\Office;
 use App\Models\OfficeUser;
 use App\Models\Seat;
@@ -37,13 +38,15 @@ class OfficeController extends Controller
         ->where('office_user.office_id', $officeId)
         ->whereNotNull('office_user.entered_at')
         ->get();
-            
+        $chats = Chat::where('office_id', $officeId)->get();
+
         // dd($currentCheckedInUsers);
 
         return Inertia::render('Office/OfficeTop', [
             'handlingUserInfo' => $handlingUserInfo,
             'office' => $office,
             'currentCheckedInUsers' => $currentCheckedInUsers,
+            'chats' => $chats,
         ]);
     }
 
@@ -134,7 +137,7 @@ class OfficeController extends Controller
                 ->where('seats.seat_id', $seatId)
                 ->select('users.avatar_file_path')
                 ->first();
-            
+
 
             return response()->json(['seatInfo' => $seledtedSeatInfo, 'userAvatar' => $userAvatar]);
 
@@ -176,7 +179,7 @@ class OfficeController extends Controller
             ));
 
             DB::commit();
-            
+
             return response()->json(['seatInfo' => $seledtedSeatInfo, 'userInfo' => $userInfo]);
 
         } catch(Exception $e) {
@@ -189,7 +192,7 @@ class OfficeController extends Controller
 
     /**
      * ユーザーの離脱処理
-     */    
+     */
     public function leaveOffice(Request $request)
     {
         $eventAction = 'leave';
@@ -197,11 +200,11 @@ class OfficeController extends Controller
         try {
             Log::info('Request received in leaveOffice', $request->all());
 
-            
+
             $officeId = $request->route('office_id');
             $userId = $request->route('user_id');
             $userInfo = User::where('id', $userId)->first();
-            
+
             // イベント発火
             Log::info('OfficeUserStatusUpdated イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
             event(new OfficeUserStatusUpdated (
@@ -212,7 +215,7 @@ class OfficeController extends Controller
             Log::info('OfficeUserStatusUpdated event has been fired');
 
             DB::commit();
-            
+
             return response()->json(['userInfo' => $userInfo]);
 
         } catch(Exception $e) {
@@ -224,4 +227,31 @@ class OfficeController extends Controller
     }
 
     public function store(Request $request) {}
+
+    /**
+     * チャット送信
+     */
+    public function sendMessage(Request $request) {
+
+        $officeId = $request->route('office_id');
+        $userId = $request->route('user_id');
+        $message = $request->input('message');
+
+        try {
+            Chat::insert(
+                [
+                    'office_id' => $officeId,
+                    'user_id' => $userId,
+                    'text' => $message,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ],
+            );
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'メッセージの受信に失敗しました'], 500);
+        }
+    }
 }

@@ -1,7 +1,8 @@
 import NavBar from '@/Components/NavBar';
 import { ChatIcon } from '@chakra-ui/icons';
-import { Box, Flex, Heading, Image, Link, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, HStack, Image, Input, Link, Text } from '@chakra-ui/react';
 import { Head } from '@inertiajs/react';
+import axios from 'axios';
 import Echo from 'laravel-echo';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
     const officeImagePath = '/img/office';
 
     const [enteringUsers, setEnteringUsers] = useState(users);
+    const [message, setMessage] = useState("");
 
     window.Pusher = Pusher;
     const echo = new Echo({
@@ -78,50 +80,90 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
       }
   };
 
+  const handleMessage = (e) => {
+    setMessage(e.target.value);
+    console.log(message);
+  };
+
+  const sendMessage = async(message, officeId, userId) => {
+      console.log(userId);
+    try {
+        const response = await axios.post(route('office.sendMessage', {office_id: officeId, user_id: userId}), {
+            message: message
+        });
+    } catch(error) {
+        console.error('メッセージの送信中にエラーが発生しました。', error);
+    }
+  }
+
 
   return (
-    <Box>
-      <Flex as="header" className='bg-slate-900' alignItems="center" justifyContent="space-between" h="60px" px={3}>
-        <Flex alignItems="center" justifyContent="space-between">
-            <Link
-              href='/dashboard'
-              onClick={(event) => {
-                handleLeaveOffice(event, officeId, userId);
-                console.log("aaaaaaa");
-              }}
-            >
+    <Box h="100vh">
+        <Flex as="header" className='bg-slate-900' alignItems="center" justifyContent="space-between" h="60px" px={3}>
+            <Flex alignItems="center" justifyContent="space-between">
+                <Link
+                href='/dashboard'
+                onClick={(event) => {
+                    handleLeaveOffice(event, officeId, userId);
+                    console.log("aaaaaaa");
+                }}
+                >
                 <Image src={`${iconsPath}/app_icon.svg`} alt="logo" w="130px" /></Link>
-            <Text as="h1" pb="1px" color="white" ml={3}>{officeName}</Text>
-        </Flex>
-        <Flex alignItems="center" justifyContent="space-between" pr={3}>
-            <Image src={`${iconsPath}/join_users_white.svg`} alt="logo" cursor="pointer" mr={3} w="28px" />
-            <Flex>
-              {enteringUsers.map((user, index) => (
-                <Image
-                  key={index}
-                  w="30px"
-                  h="30px"
-                  objectFit="cover"
-                  borderRadius="50%"
-                  css={{"& + &": {
-                    marginLeft: "-10px",
-                  }}}
-                  src={user.avatar_file_path}
-                />
-              ))}
+                <Text as="h1" pb="1px" color="white" ml={3}>{officeName}</Text>
             </Flex>
-            <ChatIcon display="block" ml={20} color="white" w="28px" cursor="pointer" />
+            <Flex alignItems="center" justifyContent="space-between" pr={3}>
+                <Image src={`${iconsPath}/join_users_white.svg`} alt="logo" cursor="pointer" mr={3} w="28px" />
+                <Flex>
+                {enteringUsers.map((user, index) => (
+                    <Image
+                    key={index}
+                    w="30px"
+                    h="30px"
+                    objectFit="cover"
+                    borderRadius="50%"
+                    css={{"& + &": {
+                        marginLeft: "-10px",
+                    }}}
+                    src={user.avatar_file_path}
+                    />
+                ))}
+                </Flex>
+                <ChatIcon display="block" ml={20} color="white" w="28px" cursor="pointer" />
+            </Flex>
         </Flex>
-      </Flex>
-      <Box
-        as="main"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        h="calc(100vh - 60px)"
-        bgImage={`url(${officeImagePath}/flooring_2.png)`}
-        bgSize="cover"
-        bgRepeat="repeat">{children}</Box>
+        <Box
+            as="main"
+            position="relative"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            h="calc(100vh - 60px)"
+            bgImage={`url(${officeImagePath}/flooring_2.png)`}
+            bgSize="cover"
+            bgRepeat="repeat"
+        >
+            {children}
+            <HStack
+                mb="30px"
+                p="15px"
+                w="40%"
+                minH="60px"
+            >
+            <Input
+                bg="white"
+                placeholder="メッセージを入力..."
+                value={message}
+                onChange={handleMessage}
+            />
+            <Button
+                colorScheme="blue"
+                onClick={() => sendMessage(message, officeId ,userId)}
+            >
+                送信
+            </Button>
+            </HStack>
+        </Box>
     </Box>
   );
 };

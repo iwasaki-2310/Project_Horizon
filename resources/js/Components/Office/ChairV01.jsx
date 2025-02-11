@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
 
-const ChairV01 = ({officeId, seatId}) => {
+const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     const officeImagePath = '/img/office';
     const [userAvatar, setUserAvatar] = useState();
     const [seatStatus, setSeatStatus] = useState({
@@ -14,6 +14,8 @@ const ChairV01 = ({officeId, seatId}) => {
         userAvatar: null,
     });
     const [isAvailable, setIsAvailable] = useState(true);
+    const [messages, setmessages] = useState(chats);
+    console.log(chats);
 
     /**
      * Laravel Reverbのセットアップ
@@ -86,6 +88,13 @@ const ChairV01 = ({officeId, seatId}) => {
     }, [window.Echo]);
 
     /**
+     * チャット取得
+     */
+    useEffect(() => {
+
+    })
+
+    /**
      * ユーザー操作により座席情報の更新
      */
     const handleSeatStatus = async(officeId, seatId) => {
@@ -114,16 +123,70 @@ const ChairV01 = ({officeId, seatId}) => {
                         border="1px solid red"
                         onClick={ () => handleSeatStatus(officeId, seatId)}
                     />
-                ) :
-                (
-                    <Image
-                        cursor="pointer"
-                        w="60px"
-                        h="60px"
-                        borderRadius="50%"
-                        objectFit="cover"
-                        src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)}
-                    />
+                ) : (
+                    <Box position="relative">
+                        <Image
+                            cursor="pointer"
+                            w="60px"
+                            h="60px"
+                            borderRadius="50%"
+                            objectFit="cover"
+                            border="2px solid blue"
+                            src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)}
+                        />
+                        {
+                            // 座席により吹き出しの位置を調整
+                            speechBubble === "left" ? (
+                                <Box
+                                    position="absolute"
+                                    top="-50px"
+                                    left="-50px"
+                                    transform="translate(-100%, -50%)"
+                                    p={4}
+                                    bgColor="white"
+                                    borderRadius="30px"
+                                    w="300px"
+                                    h="100px"
+                                    _before={{
+                                        content: '""',
+                                        position: "absolute",
+                                        bottom: "-15px",
+                                        right: "-47px",
+                                        transform: "translateX(-50%) rotate(-45deg)",
+                                        borderLeft: "30px solid transparent",
+                                        borderRight: "30px solid transparent",
+                                        borderTop: "50px solid white",
+                                    }}
+                                >
+                                    おかねほしい
+                                </Box>
+                            ) : (
+                                <Box
+                                    position="absolute"
+                                    top="-50px"
+                                    right="-50px"
+                                    transform="translate(100%, -50%)"
+                                    p={4}
+                                    bgColor="white"
+                                    borderRadius="30px"
+                                    w="300px"
+                                    h="100px"
+                                    _before={{
+                                        content: '""',
+                                        position: "absolute",
+                                        bottom: "-15px",
+                                        left: "7px",
+                                        transform: "translateX(-50%) rotate(45deg)",
+                                        borderLeft: "30px solid transparent",
+                                        borderRight: "30px solid transparent",
+                                        borderTop: "50px solid white",
+                                    }}
+                                >
+                                    おなかすいた
+                                </Box>
+                            )
+                        }
+                    </Box>
                 )
             }
         </>
