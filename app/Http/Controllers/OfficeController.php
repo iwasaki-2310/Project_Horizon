@@ -38,7 +38,7 @@ class OfficeController extends Controller
         ->where('office_user.office_id', $officeId)
         ->whereNotNull('office_user.entered_at')
         ->get();
-        $chats = Chat::where('office_id', $officeId)->get();
+        $chats = Chat::where('office_id', $officeId)->orderByDesc('created_at')->get();
 
         // dd($currentCheckedInUsers);
 

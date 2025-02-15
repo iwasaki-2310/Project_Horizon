@@ -15,7 +15,8 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     });
     const [isAvailable, setIsAvailable] = useState(true);
     const [messages, setmessages] = useState(chats);
-    console.log(chats);
+    const [thisUserMessage, setThisUserMessage] = useState([]);
+    // console.log(chats);
 
     /**
      * Laravel Reverbのセットアップ
@@ -91,8 +92,31 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
      * チャット取得
      */
     useEffect(() => {
-
-    })
+        const fetcheThisUserMessage = async(officeId, seatId) => {
+            try {
+                const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
+                const seatInfo = response.data.seatInfo;
+                // console.log(seatInfo);
+                // console.log(typeof seatInfo.user_id, seatInfo.user_id);
+                if (messages.length > 0) {
+                    // console.log(messages)
+                    if (seatInfo.user_id != null) {
+                        const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
+                        console.log(userMessage);
+                        if (userMessage) {
+                            setThisUserMessage(userMessage.text);
+                        } else {
+                            setThisUserMessage([]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetcheThisUserMessage(officeId, seatId);
+        // console.log(thisUserMessage);
+    }, [messages, officeId, seatId]);
 
     /**
      * ユーザー操作により座席情報の更新
@@ -158,7 +182,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                         borderTop: "50px solid white",
                                     }}
                                 >
-                                    おかねほしい
+                                    {thisUserMessage}
                                 </Box>
                             ) : (
                                 <Box
@@ -182,7 +206,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                         borderTop: "50px solid white",
                                     }}
                                 >
-                                    おなかすいた
+                                    {thisUserMessage}
                                 </Box>
                             )
                         }
