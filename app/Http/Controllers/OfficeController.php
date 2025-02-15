@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OfficeUserStatusUpdated;
 use App\Events\SeatOccupied;
+use App\Events\SendMessageEvent;
 use App\Models\Chat;
 use App\Models\Office;
 use App\Models\OfficeUser;
@@ -237,16 +238,14 @@ class OfficeController extends Controller
         $userId = $request->route('user_id');
         $message = $request->input('message');
 
+
         try {
-            Chat::insert(
-                [
-                    'office_id' => $officeId,
-                    'user_id' => $userId,
-                    'text' => $message,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ],
-            );
+            event(new SendMessageEvent (
+                $officeId,
+                $userId,
+                $message,
+            ));
+            Log::info('SendMessageEvent has been fired');
 
         } catch(Exception $e) {
             DB::rollBack();

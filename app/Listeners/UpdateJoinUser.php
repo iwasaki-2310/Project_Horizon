@@ -27,8 +27,8 @@ class UpdateJoinUser
      * Handle the event.
      */
     public function handle(OfficeUserStatusUpdated $event): void
-    {   
-        Log::info('joinリスナー起動');
+    {
+        Log::info('joinリスナー処理開始');
         try {
             if($event->eventAction === 'join') {
                 OfficeUser::upsert(
@@ -43,7 +43,7 @@ class UpdateJoinUser
                     ['office_id', 'user_id'], //一意にする条件
                     ['entered_at'] //updateの場合に更新するカラム
                 );
-    
+
                 Log::info('ユーザーの入室に成功：' . $event->userInfo->id . 'がofficeID' . $event->officeId . 'に入室しました。');
             }
         } catch(Exception $e) {

@@ -26,15 +26,15 @@ class UpdateLeaveUser
      * Handle the event.
      */
     public function handle(OfficeUserStatusUpdated $event): void
-    {   
-        Log::info('leaveリスナー起動');
+    {
+        Log::info('leaveリスナー処理開始');
         try {
             if($event->eventAction === 'leave') {
                 OfficeUser::where('user_id', $event->userInfo->id)
                 ->update([
                     'entered_at' => Null,
                 ]);
-    
+
                 Log::info('ユーザーの退出に成功：' . $event->userInfo->id . 'がofficeID' . $event->officeId . 'から退出しました。');
             }
         } catch(Exception $e) {

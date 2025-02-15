@@ -96,8 +96,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             try {
                 const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
                 const seatInfo = response.data.seatInfo;
-                // console.log(seatInfo);
-                // console.log(typeof seatInfo.user_id, seatInfo.user_id);
+
                 if (messages.length > 0) {
                     // console.log(messages)
                     if (seatInfo.user_id != null) {
