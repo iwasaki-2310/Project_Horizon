@@ -89,7 +89,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     }, [window.Echo]);
 
     /**
-     * チャット取得
+     * チャットメッセージの初期化
      */
     useEffect(() => {
         const fetcheThisUserMessage = async(officeId, seatId) => {
@@ -101,7 +101,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                     // console.log(messages)
                     if (seatInfo.user_id != null) {
                         const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
-                        console.log(userMessage);
+
                         if (userMessage) {
                             setThisUserMessage(userMessage.text);
                         } else {
@@ -114,8 +114,31 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             }
         }
         fetcheThisUserMessage(officeId, seatId);
-        // console.log(thisUserMessage);
-    }, [messages, officeId, seatId]);
+    }, [officeId, seatId]);
+
+    /**
+     * チャットメッセージが追加されたらブロードキャストにより受信
+     */
+    useEffect(() => {
+        const channel = window.Echo.private("send_message");
+
+        channel.listen("SendMessageEvent", (data) => {
+            setmessages((prevMessages) => [...prevMessages, {office_id:data.officeId, user_id:data.userId, text: data.message}]);
+        });
+
+        return () => {
+            channel.unsubscribe();
+        };
+
+    }, [window.Echo]);
+
+    useEffect(() => {
+        // console.log(messages);
+        // const updateUserMessage = messages.find(message => message.user_id == data.user_id);
+        const latestMessage = messages[messages.length - 1];
+        console.log(latestMessage.text);
+        setThisUserMessage(latestMessage.text);
+    }, [messages]);
 
     /**
      * ユーザー操作により座席情報の更新
@@ -161,6 +184,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                             // 座席により吹き出しの位置を調整
                             speechBubble === "left" ? (
                                 <Box
+                                    key={thisUserMessage}
                                     position="absolute"
                                     top="-50px"
                                     left="-50px"
@@ -185,6 +209,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                 </Box>
                             ) : (
                                 <Box
+                                    key={thisUserMessage}
                                     position="absolute"
                                     top="-50px"
                                     right="-50px"

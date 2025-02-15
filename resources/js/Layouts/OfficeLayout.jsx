@@ -82,7 +82,6 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
 
   const handleMessage = (e) => {
     setMessage(e.target.value);
-    console.log(message);
   };
 
   const sendMessage = async(message, officeId, userId) => {
