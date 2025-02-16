@@ -14,7 +14,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         userAvatar: null,
     });
     const [isAvailable, setIsAvailable] = useState(true);
-    const [messages, setmessages] = useState(chats);
+    const [messages, setMessages] = useState(chats);
     const [thisUserMessage, setThisUserMessage] = useState([]);
     // console.log(chats);
 
@@ -123,7 +123,10 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         const channel = window.Echo.private("send_message");
 
         channel.listen("SendMessageEvent", (data) => {
-            setmessages((prevMessages) => [...prevMessages, {office_id:data.officeId, user_id:data.userId, text: data.message}]);
+            setMessages((prevMessages) => [
+                { office_id: Number(data.officeId), user_id: Number(data.userId), text: data.message},
+                ...prevMessages
+            ]);
         });
 
         return () => {
@@ -133,11 +136,31 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     }, [window.Echo]);
 
     useEffect(() => {
-        // console.log(messages);
-        // const updateUserMessage = messages.find(message => message.user_id == data.user_id);
-        const latestMessage = messages[messages.length - 1];
-        console.log(latestMessage.text);
-        setThisUserMessage(latestMessage.text);
+        const fetcheThisUserMessage = async(officeId, seatId) => {
+            try {
+                const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
+                const seatInfo = response.data.seatInfo;
+
+                if (messages.length > 0) {
+                    if (seatInfo.user_id != null) {
+                        console.log(messages);
+                        const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
+                        console.log(userMessage);
+
+                        if (userMessage) {
+                            setThisUserMessage(userMessage.text);
+                        } else {
+                            setThisUserMessage([]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetcheThisUserMessage(officeId, seatId);
+        // console.log(latestMessage.text);
+        // setThisUserMessage(latestMessage.text);
     }, [messages]);
 
     /**

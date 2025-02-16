@@ -90,6 +90,8 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
         const response = await axios.post(route('office.sendMessage', {office_id: officeId, user_id: userId}), {
             message: message
         });
+        const messageBox = document.getElementById('input-message');
+        messageBox.value = "";
     } catch(error) {
         console.error('メッセージの送信中にエラーが発生しました。', error);
     }
@@ -150,6 +152,7 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
                 minH="60px"
             >
             <Input
+                id="input-message"
                 bg="white"
                 placeholder="メッセージを入力..."
                 value={message}
