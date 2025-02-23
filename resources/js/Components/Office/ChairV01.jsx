@@ -1,6 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
@@ -16,7 +16,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     const [isAvailable, setIsAvailable] = useState(true);
     const [messages, setMessages] = useState(chats);
     const [thisUserMessage, setThisUserMessage] = useState([]);
-    // console.log(chats);
+    const [hasSentMessage, setHasSentMessage] = useState();
 
     /**
      * Laravel Reverbのセットアップ
@@ -47,14 +47,37 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                 isAvailable:seatInfo.is_availalble,
                 userId: seatInfo.user_id,
                 userAvatar: sittingUserAvatar,
-            })
+            });
+
+            if (seatInfo.user_id) {
+                const userMessage = messagesRef.current.find(message => message.user_id === seatInfo.user_id);
+                setThisUserMessage(userMessage ? userMessage.text : []);
+            }
         }
 
         if (seatStatus.userAvatar == null) {
             fetcheSeatStatus(officeId, seatId);
         }
 
+
     }, [officeId, seatId, seatStatus.userAvatar]);
+
+    /**
+    * セッション情報取得 
+    */
+   useEffect(() => {
+    const fetcheSessionStatus = async() => {
+      try {
+        const  response = await axios.get(route('office.getSessionStatus', {office_id: officeId, user_id: seatStatus.userId}));
+        console.log(response);
+        setHasSentMessage(response.data.has_sent_message);
+      } catch(error) {
+        console.error('セッション情報の取得に失敗', error);
+      }
+    }
+
+    fetcheSessionStatus();
+   }, [officeId, seatStatus.userId]);
 
     /**
      * reverbサーバーより非同期で座席の状態を取得
@@ -143,9 +166,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
 
                 if (messages.length > 0) {
                     if (seatInfo.user_id != null) {
-                        console.log(messages);
                         const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
-                        console.log(userMessage);
 
                         if (userMessage) {
                             setThisUserMessage(userMessage.text);
@@ -159,9 +180,8 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             }
         }
         fetcheThisUserMessage(officeId, seatId);
-        // console.log(latestMessage.text);
-        // setThisUserMessage(latestMessage.text);
-    }, [messages]);
+
+    }, [messages, seatId, seatStatus.userId]);
 
     /**
      * ユーザー操作により座席情報の更新
@@ -171,7 +191,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             const response = await axios.post(route('office.seatOccupy', {office_id: officeId, seat_id: seatId }));
 
         } catch (error) {
-            console.log(error);
+            console.error(error);
             if(error.response && error.response.status === 409) {
                 alert('この席は既に着席されています。');
             }
@@ -205,7 +225,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                         />
                         {
                             // 座席により吹き出しの位置を調整
-                            speechBubble === "left" ? (
+                            hasSentMessage && speechBubble === "left" ? (
                                 <Box
                                     key={thisUserMessage}
                                     position="absolute"
@@ -231,6 +251,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                     {thisUserMessage}
                                 </Box>
                             ) : (
+                                hasSentMessage &&
                                 <Box
                                     key={thisUserMessage}
                                     position="absolute"

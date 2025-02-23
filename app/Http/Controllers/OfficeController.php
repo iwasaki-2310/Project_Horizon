@@ -18,6 +18,7 @@ use Illuminate\Contracts\Support\ValidatedData;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use PhpParser\Node\Stmt\TryCatch;
 
 class OfficeController extends Controller
@@ -70,6 +71,9 @@ class OfficeController extends Controller
 
         DB::beginTransaction();
         try {
+
+            // セッションに「まだチャットを送信していない」状態を保存
+            session(['has_sent_message_{$this->user->id}_{$office->id}' => false]);
 
             // パスワード誤り
             if($office->office_password && $office->office_password !== $requestedOfficePassword) {
@@ -199,12 +203,12 @@ class OfficeController extends Controller
         $eventAction = 'leave';
         DB::beginTransaction();
         try {
-            Log::info('Request received in leaveOffice', $request->all());
-
-
             $officeId = $request->route('office_id');
             $userId = $request->route('user_id');
             $userInfo = User::where('id', $userId)->first();
+
+             // セッション値を削除
+            session(['has_sent_message_{$this->user->id}_{$office->id}' => true]);
 
             // イベント発火
             Log::info('OfficeUserStatusUpdated イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
@@ -240,6 +244,9 @@ class OfficeController extends Controller
 
 
         try {
+             // ユーザーが初めてメッセージを送信したら、セッションを更新
+            session(['has_sent_message_{$this->user->id}_{$office->id}' => true]);
+
             event(new SendMessageEvent (
                 $officeId,
                 $userId,
@@ -251,6 +258,25 @@ class OfficeController extends Controller
             DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(['error' => 'メッセージの受信に失敗しました'], 500);
+        }
+    }
+
+    /**
+     * チャット送信
+     */
+    public function getSessionStatus(Request $request) {
+
+        $officeId = $request->route('office_id');
+        $userId = $request->route('user_id');
+        $sessionKey = "has_sent_message_{$userId}_{$officeId}";
+        $sessionValue = session($sessionKey, false);
+
+        try {
+            return response()->json(['has_sent_message' => $sessionValue]); 
+        } catch(Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'セッション情報の取得に失敗しました。'], 500);
         }
     }
 }

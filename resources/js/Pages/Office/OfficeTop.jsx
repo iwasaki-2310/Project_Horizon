@@ -37,6 +37,7 @@ const OfficeTop = ({ handlingUserInfo ,office, currentCheckedInUsers, chats }) =
     const officeImagePath = '/img/office';
     const [seatStatus ,setSeatStatus] = useState({});
 
+
     // このページのみBodyタグにoverfro-hiddenを付与
     useEffect(() => {
         document.body.classList.add('overflow-hidden');
