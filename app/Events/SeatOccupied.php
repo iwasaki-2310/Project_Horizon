@@ -24,17 +24,19 @@ class SeatOccupied implements ShouldBroadcast
     public $userId;
     public $userAvatar;
     public $originalSeatId;
+    public $isAvailable;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $seatId, $userId, $userAvatar, $originalSeatId)
+    public function __construct($officeId, $seatId, $userId, $userAvatar, $originalSeatId, $isAvailable)
     {
         $this->officeId = $officeId;
         $this->seatId = $seatId;
         $this->userId = $userId;
         $this->userAvatar = $userAvatar;
         $this->originalSeatId = $originalSeatId;
+        $this->isAvailable = $isAvailable;
     }
 
     /**
@@ -58,6 +60,7 @@ class SeatOccupied implements ShouldBroadcast
             'originalSeatId' => $this->originalSeatId ?? null,
             'userId' => $this->userId,
             'userAvatar' => $this->userAvatar,
+            'isAvailable' => $this->isAvailable,
         ];
         Log::info('SeatOccupied event triggered:', $data);
 

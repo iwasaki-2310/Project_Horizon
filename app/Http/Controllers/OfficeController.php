@@ -168,6 +168,7 @@ class OfficeController extends Controller
             $seledtedSeatInfo = Seat::where('office_id', $officeId)
             ->where('seat_id', $seatId)
             ->first();
+            $seatAvailable = true;
 
             // 着席中のユーザーがいる場合は処理を中断
             if($seledtedSeatInfo->is_availalble == false) {
@@ -181,6 +182,7 @@ class OfficeController extends Controller
                 $this->user->id,
                 $userAvatar,
                 $originalSeatId,
+                $seatAvailable,
             ));
 
             DB::commit();
