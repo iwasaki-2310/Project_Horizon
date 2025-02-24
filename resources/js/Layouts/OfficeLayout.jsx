@@ -53,30 +53,26 @@ const OfficeLayout = ({ children, officeId, officeName, userId, users }) => {
     fetcheSessionStatus();
   }, [officeId, thisUser]);
 
-  /**
-    * チャットメッセージが追加されたらブロードキャストにより受信
-    */
-  useEffect(() => {
-    const channel = window.Echo.private("send_message");
+//   /**
+//     * チャットメッセージが追加されたらブロードキャストにより受信
+//     */
+//   useEffect(() => {
+//     const channel = window.Echo.private("send_message");
 
-    channel.listen("SendMessageEvent", (data) => {
-      console.log(data);
-      setThisUser(prev => ({
-		...prev,
-		has_sent_message: data.hasSentMessage,
-	  }))
-	  console.log(thisUser);
-    });
+//     channel.listen("SendMessageEvent", (data) => {
+//       console.log(data);
+//       setThisUser(prev => ({
+// 		...prev,
+// 		has_sent_message: data.hasSentMessage,
+// 	  }))
+// 	  console.log(thisUser);
+//     });
 	
-    return () => {
-		channel.unsubscribe();
-    };
+//     return () => {
+// 		channel.unsubscribe();
+//     };
 	
-}, [window.Echo]);
-
-useEffect(() => {
-    console.log("Updated thisUser:", thisUser);
-}, [thisUser]); // thisUserが更新されたらログを出力
+// }, [window.Echo]);
 
 
   /**

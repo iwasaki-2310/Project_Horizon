@@ -237,58 +237,118 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                             src={seatStatus.userAvatar} onClick={ () => handleSeatStatus(officeId, seatId)}
                         />
                         {
-                            // 座席により吹き出しの位置を調整
-                            thisUser.has_sent_message && speechBubble === "left" ? (
-                                <Box
-                                    key={thisUserMessage}
-                                    position="absolute"
-                                    top="-50px"
-                                    left="-50px"
-                                    transform="translate(-100%, -50%)"
-                                    p={4}
-                                    bgColor="white"
-                                    borderRadius="30px"
-                                    w="300px"
-                                    h="100px"
-                                    _before={{
-                                        content: '""',
-                                        position: "absolute",
-                                        bottom: "-15px",
-                                        right: "-47px",
-                                        transform: "translateX(-50%) rotate(-45deg)",
-                                        borderLeft: "30px solid transparent",
-                                        borderRight: "30px solid transparent",
-                                        borderTop: "50px solid white",
-                                    }}
-                                >
-                                    {thisUserMessage}
-                                </Box>
+                            // ↓吹き出し↓
+                            // ユーザー自身の場合
+                            thisUser.id == seatStatus.userId ? (
+                                thisUser.has_sent_message ? (
+                                    // 左側の座席の場合
+                                    speechBubble === "left" ? (
+                                        <Box
+                                            key={thisUserMessage}
+                                            position="absolute"
+                                            top="-50px"
+                                            left="-50px"
+                                            transform="translate(-100%, -50%)"
+                                            p={4}
+                                            bgColor="white"
+                                            borderRadius="30px"
+                                            w="300px"
+                                            h="100px"
+                                            _before={{
+                                                content: '""',
+                                                position: "absolute",
+                                                bottom: "-15px",
+                                                right: "-47px",
+                                                transform: "translateX(-50%) rotate(-45deg)",
+                                                borderLeft: "30px solid transparent",
+                                                borderRight: "30px solid transparent",
+                                                borderTop: "50px solid white",
+                                            }}
+                                        >
+                                            {thisUserMessage}
+                                        </Box>
+                                    ) : (
+                                        // 右側の座席の場合
+                                        <Box
+                                            key={thisUserMessage}
+                                            position="absolute"
+                                            top="-50px"
+                                            right="-50px"
+                                            transform="translate(100%, -50%)"
+                                            p={4}
+                                            bgColor="white"
+                                            borderRadius="30px"
+                                            w="300px"
+                                            h="100px"
+                                            _before={{
+                                                content: '""',
+                                                position: "absolute",
+                                                bottom: "-15px",
+                                                left: "7px",
+                                                transform: "translateX(-50%) rotate(45deg)",
+                                                borderLeft: "30px solid transparent",
+                                                borderRight: "30px solid transparent",
+                                                borderTop: "50px solid white",
+                                            }}
+                                        >
+                                            {thisUserMessage}
+                                        </Box>
+                                    )
+                                ) : ''
                             ) : (
-                                thisUser.has_sent_message &&
-                                <Box
-                                    key={thisUserMessage}
-                                    position="absolute"
-                                    top="-50px"
-                                    right="-50px"
-                                    transform="translate(100%, -50%)"
-                                    p={4}
-                                    bgColor="white"
-                                    borderRadius="30px"
-                                    w="300px"
-                                    h="100px"
-                                    _before={{
-                                        content: '""',
-                                        position: "absolute",
-                                        bottom: "-15px",
-                                        left: "7px",
-                                        transform: "translateX(-50%) rotate(45deg)",
-                                        borderLeft: "30px solid transparent",
-                                        borderRight: "30px solid transparent",
-                                        borderTop: "50px solid white",
-                                    }}
-                                >
-                                    {thisUserMessage}
-                                </Box>
+                                // 他ユーザーの場合
+                                speechBubble === "left" ? (
+                                    <Box
+                                        key={thisUserMessage}
+                                        position="absolute"
+                                        top="-50px"
+                                        left="-50px"
+                                        transform="translate(-100%, -50%)"
+                                        p={4}
+                                        bgColor="white"
+                                        borderRadius="30px"
+                                        w="300px"
+                                        h="100px"
+                                        _before={{
+                                            content: '""',
+                                            position: "absolute",
+                                            bottom: "-15px",
+                                            right: "-47px",
+                                            transform: "translateX(-50%) rotate(-45deg)",
+                                            borderLeft: "30px solid transparent",
+                                            borderRight: "30px solid transparent",
+                                            borderTop: "50px solid white",
+                                        }}
+                                    >
+                                        {thisUserMessage}
+                                    </Box>
+                                ) : (
+                                    // 右側の座席の場合
+                                    <Box
+                                        key={thisUserMessage}
+                                        position="absolute"
+                                        top="-50px"
+                                        right="-50px"
+                                        transform="translate(100%, -50%)"
+                                        p={4}
+                                        bgColor="white"
+                                        borderRadius="30px"
+                                        w="300px"
+                                        h="100px"
+                                        _before={{
+                                            content: '""',
+                                            position: "absolute",
+                                            bottom: "-15px",
+                                            left: "7px",
+                                            transform: "translateX(-50%) rotate(45deg)",
+                                            borderLeft: "30px solid transparent",
+                                            borderRight: "30px solid transparent",
+                                            borderTop: "50px solid white",
+                                        }}
+                                    >
+                                        {thisUserMessage}
+                                    </Box>
+                                )
                             )
                         }
                     </Box>
