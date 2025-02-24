@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
+import { useAuth } from "@/hooks/useAuth";
 
 const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
+    const requestUser = useAuth().user;
     const officeImagePath = '/img/office';
     const [userAvatar, setUserAvatar] = useState();
     const [seatStatus, setSeatStatus] = useState({
@@ -17,6 +19,8 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     const [messages, setMessages] = useState(chats);
     const [thisUserMessage, setThisUserMessage] = useState([]);
     const [hasSentMessage, setHasSentMessage] = useState();
+    const [thisUser, setThisUser] = useState(requestUser);
+
 
     /**
      * Laravel Reverbのセットアップ
@@ -68,9 +72,9 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
    useEffect(() => {
     const fetcheSessionStatus = async() => {
       try {
-        const  response = await axios.get(route('office.getSessionStatus', {office_id: officeId, user_id: seatStatus.userId}));
-        console.log(response);
+        const  response = await axios.get(route('office.getSessionStatus', {office_id: officeId, user_id: thisUser.id}));
         setHasSentMessage(response.data.has_sent_message);
+        // console.log('HasSentMessage：', hasSentMessage);
       } catch(error) {
         console.error('セッション情報の取得に失敗', error);
       }
@@ -121,7 +125,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                 const seatInfo = response.data.seatInfo;
 
                 if (messages.length > 0) {
-                    // console.log(messages)
+                
                     if (seatInfo.user_id != null) {
                         const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
 
@@ -146,10 +150,15 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         const channel = window.Echo.private("send_message");
 
         channel.listen("SendMessageEvent", (data) => {
+            console.log(data);
             setMessages((prevMessages) => [
                 { office_id: Number(data.officeId), user_id: Number(data.userId), text: data.message},
                 ...prevMessages
             ]);
+            setThisUser(prev => ({
+                ...prev,
+                has_sent_message: data.hasSentMessage,
+            }))
         });
 
         return () => {
@@ -157,6 +166,10 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         };
 
     }, [window.Echo]);
+
+    useEffect(() => {
+        console.log('THIS USER', thisUser);
+    }, [thisUser])
 
     useEffect(() => {
         const fetcheThisUserMessage = async(officeId, seatId) => {
@@ -225,7 +238,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                         />
                         {
                             // 座席により吹き出しの位置を調整
-                            hasSentMessage && speechBubble === "left" ? (
+                            thisUser.has_sent_message && speechBubble === "left" ? (
                                 <Box
                                     key={thisUserMessage}
                                     position="absolute"
@@ -251,7 +264,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                     {thisUserMessage}
                                 </Box>
                             ) : (
-                                hasSentMessage &&
+                                thisUser.has_sent_message &&
                                 <Box
                                     key={thisUserMessage}
                                     position="absolute"

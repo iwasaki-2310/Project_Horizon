@@ -22,15 +22,17 @@ class SendMessageEvent implements ShouldBroadcast
     public $officeId;
     public $userId;
     public $message;
+    public $hasSentMessage;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($officeId, $userId, $message)
+    public function __construct($officeId, $userId, $message, $hasSentMessage)
     {
         $this->officeId = $officeId;
         $this->userId = $userId;
         $this->message = $message;
+        $this->hasSentMessage = $hasSentMessage;
     }
 
     /**
@@ -52,6 +54,7 @@ class SendMessageEvent implements ShouldBroadcast
             'officeId' => $this->officeId,
             'userId' => $this->userId,
             'message' => $this->message,
+            'hasSentMessage' => $this->hasSentMessage,
         ];
         Log::info('SendMessageEvent triggered:', $data);
 

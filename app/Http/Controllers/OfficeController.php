@@ -241,16 +241,18 @@ class OfficeController extends Controller
         $officeId = $request->route('office_id');
         $userId = $request->route('user_id');
         $message = $request->input('message');
+        $sessionKey = "has_sent_message_{$userId}_{$officeId}";
 
 
         try {
              // ユーザーが初めてメッセージを送信したら、セッションを更新
-            session(['has_sent_message_{$this->user->id}_{$office->id}' => true]);
+            $hasSentMessage = session($sessionKey, true);
 
             event(new SendMessageEvent (
                 $officeId,
                 $userId,
                 $message,
+                $hasSentMessage,
             ));
             Log::info('SendMessageEvent has been fired');
 
