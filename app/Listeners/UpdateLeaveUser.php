@@ -47,7 +47,7 @@ class UpdateLeaveUser
                     'is_availalble' => true,
                 ]);
 
-                event(new SeatOccupied($event->officeId, $targetSeatId, null, null, $targetSeatId->seat_id, true));
+                event(new SeatOccupied($event->officeId, null, null, null, $targetSeatId->seat_id, true));
 
                 Log::info('ユーザーの退出に成功：' . $event->userInfo->id . 'がofficeID' . $event->officeId . 'から退出しました。');
             }
