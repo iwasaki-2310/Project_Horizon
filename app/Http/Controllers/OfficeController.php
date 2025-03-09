@@ -202,6 +202,7 @@ class OfficeController extends Controller
      */
     public function leaveOffice(Request $request)
     {
+
         $eventAction = 'leave';
         DB::beginTransaction();
         try {

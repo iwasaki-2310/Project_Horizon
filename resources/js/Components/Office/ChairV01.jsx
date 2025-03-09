@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     const requestUser = useAuth().user;
     const officeImagePath = '/img/office';
+    const messagesRef = useRef([]);
     const [userAvatar, setUserAvatar] = useState();
     const [seatStatus, setSeatStatus] = useState({
         isAvailable: true,
@@ -38,10 +39,16 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         enabledTransports: 'ws'
     });
 
+    // useEffect(() => {
+    //     messagesRef.current = messages;
+    // }, [messages]);
+    
+
     /**
      * 座席情報の初期化
      */
     useEffect(() => {
+        // console.log(messagesRef.current);
         const fetcheSeatStatus = async(officeId, seatId) => {
             const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
             const seatInfo = response.data.seatInfo;
@@ -53,10 +60,13 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                 userAvatar: sittingUserAvatar,
             });
 
-            if (seatInfo.user_id) {
-                const userMessage = messagesRef.current.find(message => message.user_id === seatInfo.user_id);
-                setThisUserMessage(userMessage ? userMessage.text : []);
-            }
+            // if (seatInfo.user_id) {
+            //     const currentMessages = messages.filter(message => message.deleted_at == null);
+            //     console.log(currentMessages);
+            //     const userMessage = currentMessages.find(message => message.user_id === seatInfo.user_id);
+            //     // console.log(userMessage);
+            //     setThisUserMessage(userMessage ? userMessage.text : []);
+            // }
         }
 
         if (seatStatus.userAvatar == null) {
@@ -121,13 +131,20 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
     useEffect(() => {
         const fetcheThisUserMessage = async(officeId, seatId) => {
             try {
+                // console.log(messages);
                 const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
                 const seatInfo = response.data.seatInfo;
+                // console.log(seatInfo);
 
                 if (messages.length > 0) {
                 
                     if (seatInfo.user_id != null) {
-                        const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
+                        const currentMessages = messages.filter(message => message.deleted_at == null);
+                        if(currentMessages.length === 0) {
+                            return;
+                        }
+                        const userMessage = currentMessages.find(message => message.user_id == seatInfo.user_id);
+                        console.log(userMessage);
 
                         if (userMessage) {
                             setThisUserMessage(userMessage.text);
@@ -141,60 +158,48 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             }
         }
         fetcheThisUserMessage(officeId, seatId);
-    }, [officeId, seatId]);
+    }, [officeId, seatId, messages, seatStatus.userId]);
 
     /**
      * チャットメッセージが追加されたらブロードキャストにより受信
      */
     useEffect(() => {
         const channel = window.Echo.private("send_message");
-
-        channel.listen("SendMessageEvent", (data) => {
-            console.log(data);
-            setMessages((prevMessages) => [
-                { office_id: Number(data.officeId), user_id: Number(data.userId), text: data.message},
-                ...prevMessages
-            ]);
-            setThisUser(prev => ({
-                ...prev,
-                has_sent_message: data.hasSentMessage,
-            }))
-        });
-
-        return () => {
-            channel.unsubscribe();
-        };
-
-    }, [window.Echo]);
-
-    useEffect(() => {
-        console.log('THIS USER', thisUser);
-    }, [thisUser])
-
-    useEffect(() => {
         const fetcheThisUserMessage = async(officeId, seatId) => {
             try {
+                // console.log(messages);
                 const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
                 const seatInfo = response.data.seatInfo;
 
-                if (messages.length > 0) {
-                    if (seatInfo.user_id != null) {
-                        const userMessage = messages.find(message => message.user_id == seatInfo.user_id);
+                channel.listen("SendMessageEvent", (data) => {
+                    console.log(data);
+                    setMessages((prevMessages) => [
+                        { office_id: Number(data.officeId), user_id: Number(data.userId), text: data.message},
+                        ...prevMessages
+                    ]);
 
-                        if (userMessage) {
-                            setThisUserMessage(userMessage.text);
-                        } else {
-                            setThisUserMessage([]);
-                        }
-                    }
-                }
+                    if(seatInfo.user_id == data.userId) {
+                        setThisUserMessage(data.message);
+                    };
+
+                    setThisUser(prev => ({
+                        ...prev,
+                        has_sent_message: data.hasSentMessage,
+                    }))
+                });
+
             } catch (error) {
                 console.error(error);
             }
         }
         fetcheThisUserMessage(officeId, seatId);
 
-    }, [messages, seatId, seatStatus.userId]);
+
+        return () => {
+            channel.unsubscribe();
+        };
+
+    }, [seatId]);
 
     /**
      * ユーザー操作により座席情報の更新
@@ -210,6 +215,8 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
             }
         }
     }
+
+    console.log(thisUserMessage);
 
 
     return(
@@ -240,8 +247,67 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                             // ↓吹き出し↓
                             // ユーザー自身の場合
                             thisUser.id == seatStatus.userId ? (
-                                thisUser.has_sent_message ? (
-                                    // 左側の座席の場合
+                                thisUserMessage.length !== 0 && (
+                                    thisUser.has_sent_message ? (
+                                        // 左側の座席の場合
+                                        speechBubble === "left" ? (
+                                            <Box
+                                                key={thisUserMessage}
+                                                position="absolute"
+                                                top="-50px"
+                                                left="-50px"
+                                                transform="translate(-100%, -50%)"
+                                                p={4}
+                                                bgColor="white"
+                                                borderRadius="30px"
+                                                w="300px"
+                                                h="100px"
+                                                _before={{
+                                                    content: '""',
+                                                    position: "absolute",
+                                                    bottom: "-15px",
+                                                    right: "-47px",
+                                                    transform: "translateX(-50%) rotate(-45deg)",
+                                                    borderLeft: "30px solid transparent",
+                                                    borderRight: "30px solid transparent",
+                                                    borderTop: "50px solid white",
+                                                }}
+                                            >
+                                                {thisUserMessage}
+                                            </Box>
+                                        ) : (
+                                            // 右側の座席の場合
+                                            <Box
+                                                key={thisUserMessage}
+                                                position="absolute"
+                                                top="-50px"
+                                                right="-50px"
+                                                transform="translate(100%, -50%)"
+                                                p={4}
+                                                bgColor="white"
+                                                borderRadius="30px"
+                                                w="300px"
+                                                h="100px"
+                                                _before={{
+                                                    content: '""',
+                                                    position: "absolute",
+                                                    bottom: "-15px",
+                                                    left: "7px",
+                                                    transform: "translateX(-50%) rotate(45deg)",
+                                                    borderLeft: "30px solid transparent",
+                                                    borderRight: "30px solid transparent",
+                                                    borderTop: "50px solid white",
+                                                }}
+                                            >
+                                                {thisUserMessage}
+                                            </Box>
+                                        )
+                                    ) : ''
+
+                                )
+                            ) : (
+                                // 他ユーザーの場合
+                                thisUserMessage.length !== 0 && (
                                     speechBubble === "left" ? (
                                         <Box
                                             key={thisUserMessage}
@@ -294,60 +360,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                             {thisUserMessage}
                                         </Box>
                                     )
-                                ) : ''
-                            ) : (
-                                // 他ユーザーの場合
-                                speechBubble === "left" ? (
-                                    <Box
-                                        key={thisUserMessage}
-                                        position="absolute"
-                                        top="-50px"
-                                        left="-50px"
-                                        transform="translate(-100%, -50%)"
-                                        p={4}
-                                        bgColor="white"
-                                        borderRadius="30px"
-                                        w="300px"
-                                        h="100px"
-                                        _before={{
-                                            content: '""',
-                                            position: "absolute",
-                                            bottom: "-15px",
-                                            right: "-47px",
-                                            transform: "translateX(-50%) rotate(-45deg)",
-                                            borderLeft: "30px solid transparent",
-                                            borderRight: "30px solid transparent",
-                                            borderTop: "50px solid white",
-                                        }}
-                                    >
-                                        {thisUserMessage}
-                                    </Box>
-                                ) : (
-                                    // 右側の座席の場合
-                                    <Box
-                                        key={thisUserMessage}
-                                        position="absolute"
-                                        top="-50px"
-                                        right="-50px"
-                                        transform="translate(100%, -50%)"
-                                        p={4}
-                                        bgColor="white"
-                                        borderRadius="30px"
-                                        w="300px"
-                                        h="100px"
-                                        _before={{
-                                            content: '""',
-                                            position: "absolute",
-                                            bottom: "-15px",
-                                            left: "7px",
-                                            transform: "translateX(-50%) rotate(45deg)",
-                                            borderLeft: "30px solid transparent",
-                                            borderRight: "30px solid transparent",
-                                            borderTop: "50px solid white",
-                                        }}
-                                    >
-                                        {thisUserMessage}
-                                    </Box>
+
                                 )
                             )
                         }

@@ -4,9 +4,11 @@ namespace App\Listeners;
 
 use App\Events\OfficeUserStatusUpdated;
 use App\Events\SeatOccupied;
+use App\Models\Chat;
 use App\Models\OfficeUser;
 use App\Models\Seat;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,6 +37,13 @@ class UpdateLeaveUser
                 OfficeUser::where('user_id', $event->userInfo->id)
                 ->update([
                     'entered_at' => Null,
+                ]);
+
+                // 退出後にチャットの履歴を論理削除
+                Chat::leftJoin('office_user', 'chats.office_id', 'office_user.office_id')
+                ->where('chats.user_id', $event->userInfo->id)
+                ->update([
+                    'deleted_at' => Carbon::now(),
                 ]);
 
                 $targetSeatId = Seat::where('user_id',  $event->userInfo->id)->first();
