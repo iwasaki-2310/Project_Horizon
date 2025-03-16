@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessageDeleted;
 use App\Events\OfficeUserStatusUpdated;
 use App\Events\SeatOccupied;
 use App\Events\SendMessageEvent;
@@ -213,14 +214,30 @@ class OfficeController extends Controller
              // セッション値を削除
             session(['has_sent_message_{$this->user->id}_{$office->id}' => true]);
 
-            // イベント発火
-            Log::info('OfficeUserStatusUpdated イベントを発火します', ['officeId' => $officeId, 'userId' => $userInfo->id]);
+            // ユーザー退出イベント発火
             event(new OfficeUserStatusUpdated (
                 $officeId,
                 $userInfo,
                 $eventAction,
             ));
             Log::info('OfficeUserStatusUpdated event has been fired');
+
+            // 退出ユーザーのメッセージを論理削除
+            Chat::where('office_id', $officeId)
+            ->where('user_id', $userId)
+            ->update([
+                'deleted_at' => Carbon::now(),
+            ]);
+
+            // 削除後の有効なチャットメッセージを取得（削除済みを除外）
+            $activeChats = Chat::where('office_id', $officeId)
+            ->whereNull('deleted_at')
+            ->get();
+
+            event(new ChatMessageDeleted (
+                $activeChats,
+            ));
+            Log::info('ユーザーID：' . $userInfo->id . 'のメッセージを論理削除しました。');
 
             DB::commit();
 

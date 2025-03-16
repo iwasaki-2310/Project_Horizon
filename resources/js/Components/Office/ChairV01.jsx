@@ -17,7 +17,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         userAvatar: null,
     });
     const [isAvailable, setIsAvailable] = useState(true);
-    const [messages, setMessages] = useState(chats);
+    const [messages, setMessages] = useState(chats);    // ルーム内の全チャットメッセージ
     const [thisUserMessage, setThisUserMessage] = useState([]);
     const [hasSentMessage, setHasSentMessage] = useState();
     const [thisUser, setThisUser] = useState(requestUser);
@@ -139,12 +139,12 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                 if (messages.length > 0) {
                 
                     if (seatInfo.user_id != null) {
-                        const currentMessages = messages.filter(message => message.deleted_at == null);
+                        const currentMessages = messages.filter(message => message.deleted_at == null); //アクティブなメッセージを取得
                         if(currentMessages.length === 0) {
                             return;
                         }
                         const userMessage = currentMessages.find(message => message.user_id == seatInfo.user_id);
-                        console.log(userMessage);
+                        // console.log(userMessage);
 
                         if (userMessage) {
                             setThisUserMessage(userMessage.text);
@@ -160,6 +160,41 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         fetcheThisUserMessage(officeId, seatId);
     }, [officeId, seatId, messages, seatStatus.userId]);
 
+    useEffect(() => {
+        const channel = window.Echo.private("deleted_leave_user_messages");
+
+
+        const handleDeletedMessages = async() => {
+            try {
+                const response = await axios.get(route('office.getSelectedSeatStatus', {office_id: officeId, seat_id: seatId}));
+                const seatInfo = response.data.seatInfo;
+                channel.listen("ChatMessageDeleted", (data) => {
+                    console.log("ああああああああああああああああああああああああああああああああああああ");
+                    // console.log(data);
+                    // 削除済みのメッセージを除外した新しいメッセージリストをセット
+                    setMessages(data.filter(message => message.deleted_at == null));
+                    console.log(messages);
+                
+                    const currentMessages = data.filter(message => message.deleted_at == null); //アクティブなメッセージを取得
+                    const userMessage = currentMessages.find(message => message.user_id == seatInfo.user_id);
+        
+                    if (userMessage) {
+                        setThisUserMessage(userMessage.text);
+                    } else {
+                        setThisUserMessage([]);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        handleDeletedMessages();
+
+        return () => {
+            channel.stopListening("ChatMessageDeleted");
+        };
+    }, [officeId, seatId, messages, seatStatus]);
+
     /**
      * チャットメッセージが追加されたらブロードキャストにより受信
      */
@@ -172,7 +207,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                 const seatInfo = response.data.seatInfo;
 
                 channel.listen("SendMessageEvent", (data) => {
-                    console.log(data);
+                    // console.log(data);
                     setMessages((prevMessages) => [
                         { office_id: Number(data.officeId), user_id: Number(data.userId), text: data.message},
                         ...prevMessages
@@ -216,8 +251,6 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
         }
     }
 
-    console.log(thisUserMessage);
-
 
     return(
         <>
@@ -247,7 +280,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                             // ↓吹き出し↓
                             // ユーザー自身の場合
                             thisUser.id == seatStatus.userId ? (
-                                thisUserMessage.length !== 0 && (
+                                thisUserMessage.length !== 0 ? (
                                     thisUser.has_sent_message ? (
                                         // 左側の座席の場合
                                         speechBubble === "left" ? (
@@ -303,11 +336,10 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                             </Box>
                                         )
                                     ) : ''
-
-                                )
+                                ) : ''
                             ) : (
                                 // 他ユーザーの場合
-                                thisUserMessage.length !== 0 && (
+                                thisUserMessage.length !== 0 ? (
                                     speechBubble === "left" ? (
                                         <Box
                                             key={thisUserMessage}
@@ -360,8 +392,7 @@ const ChairV01 = ({officeId, seatId, chats, speechBubble}) => {
                                             {thisUserMessage}
                                         </Box>
                                     )
-
-                                )
+                                ) : ''
                             )
                         }
                     </Box>
